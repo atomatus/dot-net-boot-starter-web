@@ -1,4 +1,4 @@
 # .Net Boot Starter ⊞📦💻📱🌐
 <p>
-Sytem library for multiplatforms to boot starter entity framework projects by domain aplication.
+RESTFul API library for boot starter entity framework projects.
 </p>
