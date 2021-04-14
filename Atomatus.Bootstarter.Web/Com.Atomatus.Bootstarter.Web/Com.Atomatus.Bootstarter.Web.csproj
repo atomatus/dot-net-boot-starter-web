@@ -11,7 +11,7 @@
     <Copyright>®2020-2021 Atomatus - All rights reserved</Copyright>
     <Description>Sytem library for web RESTFul API to boot starter entity framework projects by domain aplication and hexagonal architecture usage.</Description>
     <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
-    <PackageTags>ef boot starter</PackageTags>
+    <PackageTags>ef boot starter RESTFul API</PackageTags>
     <PackageVersion>0.0.1</PackageVersion>
     <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
     <PackageProjectUrl>https://github.com/atomatus/dot-net-boot-starter</PackageProjectUrl>
