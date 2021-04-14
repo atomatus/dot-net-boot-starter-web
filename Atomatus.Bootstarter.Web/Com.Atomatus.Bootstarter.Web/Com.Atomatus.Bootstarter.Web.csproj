@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <LangVersion>8.0</LangVersion>
+    <Authors>Carlos Matos</Authors>
+    <Company>Atomatus</Company>
+    <Copyright>®2020-2021 Atomatus - All rights reserved</Copyright>
+    <Description>Sytem library for web RESTFul API to boot starter entity framework projects by domain aplication and hexagonal architecture usage.</Description>
+    <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
+    <PackageTags>ef boot starter</PackageTags>
+    <PackageVersion>0.0.1</PackageVersion>
+    <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/atomatus/dot-net-boot-starter</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/atomatus/dot-net-boot-starter</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.4" />
+    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ControllerCrud.Async.cs">
+      <DependentUpon>ControllerCrud.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
+</Project>
