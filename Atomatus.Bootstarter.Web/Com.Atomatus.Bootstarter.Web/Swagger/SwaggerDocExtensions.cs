@@ -6,9 +6,19 @@ using System.Reflection;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
+    /// <summary>
+    /// Swagger doc extensions.
+    /// </summary>
     internal static class SwaggerDocExtensions
     {
-        public static string ResolveSwaggerDoc(this IConfiguration configuration, 
+        /// <summary>
+        /// Resolve swaggerdoc values or request assembly info usage.
+        /// </summary>
+        /// <param name="configuration">current configuration values</param>
+        /// <param name="assemblyCallback">assembly callback usage</param>
+        /// <param name="candidateKeys">candidate configuration keys</param>
+        /// <returns></returns>
+        internal static string ResolveSwaggerDoc(this IConfiguration configuration, 
             Func<Assembly, string> assemblyCallback,
             params string[] candidateKeys)
         {
@@ -31,7 +41,12 @@ namespace Com.Atomatus.Bootstarter.Web
             return assemblyCallback?.Invoke(Assembly.GetEntryAssembly());
         }
 
-        public static void SwaggerDoc(this SwaggerGenOptions options, SwaggerDoc doc)
+        /// <summary>
+        /// Define swagger doc to options.
+        /// </summary>
+        /// <param name="options">swagger generation options</param>
+        /// <param name="doc">swagger document values</param>
+        internal static void SwaggerDoc(this SwaggerGenOptions options, SwaggerDoc doc)
         {
             options.SwaggerDoc(doc.Version, doc);
         }

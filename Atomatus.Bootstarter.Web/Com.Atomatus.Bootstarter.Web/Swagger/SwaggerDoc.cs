@@ -8,7 +8,6 @@ using System.Reflection;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
-
     /// <summary>
     /// <para>
     /// Swagger doc informations.
@@ -20,6 +19,8 @@ namespace Com.Atomatus.Bootstarter.Web
     /// Bellow an example how to implement swaggerdoc information in appsetting.json.<br/>
     /// Whether not defined it, the <see cref="Factory"/> will try to create it from assembly definition.
     /// </para>
+    /// <para>
+    /// ● From appsettings.json:<br/><br/>
     /// <code>
     /// "SwaggerDoc": {<br/>
     /// "Title": "Your API Name",<br/>
@@ -28,11 +29,31 @@ namespace Com.Atomatus.Bootstarter.Web
     /// "Name": "Author name",<br/>
     /// "Email": "author@mail.com",<br/>
     /// "Url": "https://yourprojectaddress"<br/>
-    /// }}<br/>
+    /// }}
     /// </code>
+    /// </para>
+    /// 
+    /// <para>
+    /// ● From Assembly Fields:<br/><br/>
+    /// <code>
+    /// //Title<br/>
+    /// Assembly.GetName().Name<br/><br/>
+    /// //Versions<br/>
+    /// Assembly.GetName().Version<br/><br/>
+    /// //Description<br/>
+    /// Assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)<br/><br/>
+    /// //Author Name<br/>
+    /// FileVersionInfo.GetVersionInfo(Assembly.Location).CompanyName<br/><br/>
+    /// </code>
+    /// </para>
+    /// 
     /// </summary>
-    internal sealed class SwaggerDoc
+    public sealed class SwaggerDoc
     {
+        /// <summary>
+        /// Implicit conversion of SwaggerDoc to OpenApiInfo.
+        /// </summary>
+        /// <param name="doc"></param>
         public static implicit operator OpenApiInfo(SwaggerDoc doc)
         {
             return new OpenApiInfo
@@ -111,13 +132,30 @@ namespace Com.Atomatus.Bootstarter.Web
             }
         }
 
+        /// <summary>
+        /// Swagger author.
+        /// </summary>
         public sealed class SwaggerAuthor
         {
+            /// <summary>
+            /// Author name.
+            /// </summary>
             public string Name { get; set; }
             
+            /// <summary>
+            /// Author e-mail.
+            /// </summary>
             public string Email { get; set; }
 
+            /// <summary>
+            /// Author url page.
+            /// </summary>
             public Uri Url { get; set; }
+            
+            /// <summary>
+            /// Implicit conversion of SwaggerAuthor to OpenApiContact.
+            /// </summary>
+            /// <param name="author"></param>
 
             public static implicit operator OpenApiContact(SwaggerAuthor author)
             {
@@ -130,15 +168,26 @@ namespace Com.Atomatus.Bootstarter.Web
             }
         }
 
+        /// <summary>
+        /// Application title.
+        /// </summary>
         public string Title { get; private set; }
 
+        /// <summary>
+        /// A short description of application.
+        /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// The version of API.
+        /// </summary>
         public string Version { get; private set; }
-
+        
+        /// <summary>
+        /// The author infrormation.
+        /// </summary>
         public SwaggerAuthor Author { get; private set; }
 
         private SwaggerDoc() { }        
-
     }
 }
