@@ -11,16 +11,16 @@ namespace Com.Atomatus.Bootstarter.Web
     /// the default route "api/v{version:apiVersion}/[controller]" 
     /// and produces an "application/json" as default.
     /// </summary>
-    /// <typeparam name="Service">target service type to data persistence</typeparam>
-    /// <typeparam name="Model">target model type</typeparam>
+    /// <typeparam name="TService">target service type to data persistence</typeparam>
+    /// <typeparam name="TModel">target model type</typeparam>    
     [ApiController]
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]
-    public abstract class ControllerBase<Service, Model> : ControllerBase
-        where Service : IService
-        where Model : IModel
+    public abstract class ControllerBase<TService, TModel> : ControllerBase
+        where TService : IService
+        where TModel : IModel
     {
-        private class EmptyLogger : ILogger<ControllerBase<Service, Model>>, IDisposable
+        private class EmptyLogger : ILogger<ControllerBase<TService, TModel>>, IDisposable
         {
             public IDisposable BeginScope<TState>(TState state)
             {
@@ -40,12 +40,12 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <summary>
         /// Service for controller.
         /// </summary>
-        protected readonly Service service;
+        internal protected readonly TService service;
 
         /// <summary>
         /// Logger for controller.
         /// </summary>
-        protected readonly ILogger logger;
+        internal protected readonly ILogger logger;
         
         /// <summary>
         /// Constroller constructor.
@@ -53,10 +53,10 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service target</param>
         /// <param name="logger">logger targer</param>
-        protected ControllerBase(Service service, ILogger<ControllerBase<Service, Model>> logger)
+        protected ControllerBase(TService service, ILogger<ControllerBase<TService, TModel>> logger)
         {
             this.service = service ?? 
-                throw new ArgumentException($"The Service \"{typeof(Service).Name}\" ({typeof(Service).FullName}) " +
+                throw new ArgumentException($"The Service \"{typeof(TService).Name}\" ({typeof(TService).FullName}) " +
                 $"is not defined. Verify if this service was defined in services collection provider!");
 
             this.logger = logger ??
@@ -70,7 +70,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service target</param>
-        protected ControllerBase(Service service) : this(service, new EmptyLogger()) { }
+        protected ControllerBase(TService service) : this(service, new EmptyLogger()) { }
 
         /// <summary>
         /// Request to check if current id is valid.

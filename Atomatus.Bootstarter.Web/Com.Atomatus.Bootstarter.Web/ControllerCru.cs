@@ -3,61 +3,55 @@ using Com.Atomatus.Bootstarter.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
     /// <summary>
-    /// Versioned Controller async CRUD ([C]reate, [R]ead, [U]pdate and [D]elete) operations implementation for entity model using service.
+    /// Versioned Controller to [C]reate, [R]ead and [U]pdate Operations implementation for entity model using service.
     /// <para>
     /// This controller constains by default the following actions:<br/><br/>
     /// </para>
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="CreateAsync(TModel)"/>
+    /// └─► <see cref="Create(TModel)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[R]ead:<br/>
-    /// ├─► <see cref="GetAsync(CancellationToken)"/><br/>
-    /// ├─► <see cref="GetAsync(Guid)"/><br/>
-    /// └─► <see cref="GetAsync(TID)"/>
+    /// ├─► <see cref="Get()"/><br/>
+    /// ├─► <see cref="Get(Guid)"/><br/>
+    /// └─► <see cref="Get(TID)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="UpdateAsync(TModel)"/>
+    /// └─► <see cref="Update(TModel)"/>
     /// </para>
     /// 
-    /// <para>
-    /// ┌[D]elete:<br/>
-    /// └─► <see cref="DeleteAsync(Guid)"/>
-    /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
     /// <typeparam name="TModel">entity model type</typeparam>
     /// <typeparam name="TID">entity model id type</typeparam>
-    public abstract class ControllerCrudAsync<TService, TModel, TID> : ControllerCrudBaseAsync<TService, TModel, TID>
-        where TService : IServiceCrudAsync<TModel, TID>
+    public abstract class ControllerCru<TService, TModel, TID> : ControllerCrudBase<TService, TModel, TID>
+        where TService : IServiceCrud<TModel, TID>
         where TModel : IModel<TID>
     {
         /// <summary>
-        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// Controller constructor with service data persistence and logging perform.<br/>
         /// The follow parameters can be set by dependency injection.
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCrudAsync(TService service, ILogger<ControllerCrudAsync<TService, TModel, TID>> logger) : base(service, logger) { }
+        protected ControllerCru(TService service, ILogger<ControllerCru<TService, TModel, TID>> logger) : base(service, logger) { }
 
         /// <summary>
-        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// Controller constructor with service data persistence and logging perform.<br/>
         /// The follow parameters can be set by dependency injection.<br/>
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerCrudAsync(TService service) : base(service) { }
+        protected ControllerCru(TService service) : base(service) { }
 
         #region [C]reate
         /// <summary>
@@ -72,12 +66,12 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="result">model from body</param>
         /// <returns>action result</returns>        
         [HttpPost]
-        public virtual Task<IActionResult> CreateAsync([FromBody] TModel result) => CreateActionAsync(result);
+        public virtual IActionResult Create([FromBody] TModel result) => CreateAction(result);
         #endregion
 
         #region [R]ead
         /// <summary>
-        /// <para> 
+        /// <para>
         /// Perform a request operation to find all registers (limited to max request in service).
         /// </para>
         /// <i>https://api.urladdress/v1 (GET Method)</i>
@@ -86,12 +80,10 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● OK: Successfully, contains result list.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
-        /// <i> This operation can be cancelled.</i>
         /// </summary>
-        /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result</returns>    
         [HttpGet]
-        public virtual Task<IActionResult> GetAsync(CancellationToken cancellationToken) => GetActionAsync(cancellationToken);
+        public virtual IActionResult Get() => GetAction();
 
         /// <summary>
         /// <para>Perform a request operation to find register by id.</para>
@@ -106,7 +98,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="id">targer id</param>
         /// <returns>action result</returns>    
         [HttpGet("{id}")]
-        public virtual Task<IActionResult> GetAsync(TID id) => GetActionAsync(id);
+        public virtual IActionResult Get(TID id) => GetAction(id);
 
         /// <summary>
         /// <para>Perform a request operation to find register by uuid.</para>
@@ -121,7 +113,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="uuid">targer uuid</param>
         /// <returns>action result</returns>    
         [HttpGet("uuid/{uuid}")]
-        public virtual Task<IActionResult> GetAsync(Guid uuid) => GetActionAsync(uuid);
+        public virtual IActionResult Get(Guid uuid) => GetAction(uuid);
 
         /// <summary>
         /// <para>Perform a request operation to find registers by paging.</para>
@@ -133,14 +125,11 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
-        /// <i> This operation can be cancelled.</i>
         /// <param name="page">page index, from 0</param>
         /// <param name="limit">page limit request</param>
-        /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result</returns>    
         [HttpGet("page/{page}/{limit:int?}")]
-        public virtual Task<IActionResult> PagingAsync(int page, int limit = -1, CancellationToken cancellationToken = default)
-            => PagingActionAsync(page, limit, cancellationToken);
+        public virtual IActionResult Paging(int page, int limit = -1) => PagingAction(page, limit);
         #endregion
 
         #region [U]pdate
@@ -157,24 +146,8 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="result">model from body</param>
         /// <returns>action result</returns>        
         [HttpPut]
-        public virtual Task<IActionResult> UpdateAsync([FromBody] TModel result) => UpdateActionAsync(result);
+        public virtual IActionResult Update([FromBody] TModel result) => UpdateAction(result);
         #endregion
 
-        #region [D]elete
-        /// <summary>
-        /// <para>Perform a write operation to update data.</para>
-        /// <i>https://api.urladdress/v1/{uuid} (DELETE Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, data deleted.<br/>
-        /// ● Not Found: target data does not exists.<br/>
-        /// ● Bad Request: some error, invalid UUID or some internal error.
-        /// </para>
-        /// </summary>
-        /// <param name="uuid">target uuid entity</param>
-        /// <returns>action result</returns>        
-        [HttpDelete("{uuid}")]
-        public virtual Task<IActionResult> DeleteAsync(Guid uuid) => DeleteActionAsync(uuid);
-        #endregion
     }
 }

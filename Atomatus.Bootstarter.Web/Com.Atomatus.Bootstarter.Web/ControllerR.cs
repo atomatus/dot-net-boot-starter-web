@@ -7,71 +7,39 @@ using System;
 namespace Com.Atomatus.Bootstarter.Web
 {
     /// <summary>
-    /// Versioned Controller CRUD ([C]reate, [R]ead, [U]pdate and [D]elete) operation implementation for entity model using service.
+    /// Versioned Controller [R]ead Operation implementation for entity model using service.
     /// <para>
     /// This controller constains by default the following actions:<br/><br/>
     /// </para>
-    /// 
-    /// <para>
-    /// ┌[C]reate:<br/>
-    /// └─► <see cref="Create(TModel)"/>
-    /// </para>
-    /// 
     /// <para>
     /// ┌[R]ead:<br/>
     /// ├─► <see cref="Get()"/><br/>
     /// ├─► <see cref="Get(Guid)"/><br/>
     /// └─► <see cref="Get(TID)"/>
     /// </para>
-    /// 
-    /// <para>
-    /// ┌[U]pdate:<br/>
-    /// └─► <see cref="Update(TModel)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[D]elete:<br/>
-    /// └─► <see cref="Delete(Guid)"/>
-    /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
     /// <typeparam name="TModel">entity model type</typeparam>
     /// <typeparam name="TID">entity model id type</typeparam>
-    public abstract class ControllerCrud<TService, TModel, TID> : ControllerCrudBase<TService, TModel, TID>
+    public abstract class ControllerR<TService, TModel, TID> : ControllerCrudBase<TService, TModel, TID>
         where TService : IServiceCrud<TModel, TID>
         where TModel : IModel<TID>
     {
         /// <summary>
-        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// Controller constructor with service data persistence and logging perform.<br/>
         /// The follow parameters can be set by dependency injection.
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCrud(TService service, ILogger<ControllerCrud<TService, TModel, TID>> logger) : base(service, logger) { }
+        protected ControllerR(TService service, ILogger<ControllerR<TService, TModel, TID>> logger) : base(service, logger) { }
 
         /// <summary>
-        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// Controller constructor with service data persistence and logging perform.<br/>
         /// The follow parameters can be set by dependency injection.<br/>
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerCrud(TService service) : base(service) { }
-
-        #region [C]reate
-        /// <summary>
-        /// <para>Perform a write operation to persist data.</para>
-        /// <i>https://api.urladdress/v1 (POST Method/ Model data from body)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, contains model with Uuid.<br/>
-        /// ● Bad Request: Aleady exists or some another error.
-        /// </para>
-        /// </summary>
-        /// <param name="result">model from body</param>
-        /// <returns>action result</returns>        
-        [HttpPost]
-        public virtual IActionResult Create([FromBody] TModel result) => CreateAction(result);
-        #endregion
+        protected ControllerR(TService service) : base(service) { }
 
         #region [R]ead
         /// <summary>
@@ -136,38 +104,5 @@ namespace Com.Atomatus.Bootstarter.Web
         public virtual IActionResult Paging(int page, int limit = -1) => PagingAction(page, limit);
         #endregion
 
-        #region [U]pdate
-        /// <summary>
-        /// <para>Perform a write operation to update data.</para>
-        /// <i>https://api.urladdress/v1 (PUT Method/ Model data from body)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, data updated.<br/>
-        /// ● Not Found: target data does not exists.<br/>
-        /// ● Bad Request: some error.
-        /// </para>
-        /// </summary>
-        /// <param name="result">model from body</param>
-        /// <returns>action result</returns>        
-        [HttpPut]
-        public virtual IActionResult Update([FromBody] TModel result) => UpdateAction(result);
-        #endregion
-
-        #region [D]elete
-        /// <summary>
-        /// <para>Perform a write operation to update data.</para>
-        /// <i>https://api.urladdress/v1/{uuid} (DELETE Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, data deleted.<br/>
-        /// ● Not Found: target data does not exists.<br/>
-        /// ● Bad Request: some error, invalid UUID or some internal error.
-        /// </para>
-        /// </summary>
-        /// <param name="uuid">target uuid entity</param>
-        /// <returns>action result</returns>        
-        [HttpDelete("{uuid}")]
-        public virtual IActionResult Delete(Guid uuid) => DeleteAction(uuid);
-        #endregion
     }
 }

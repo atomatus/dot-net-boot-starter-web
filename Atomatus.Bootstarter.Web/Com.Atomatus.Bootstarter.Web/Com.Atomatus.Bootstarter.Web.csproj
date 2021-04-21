@@ -34,16 +34,55 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ControllerCrud.Base.cs">
+      <DependentUpon>Controller.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCrud.Base.Async.cs">
+      <DependentUpon>Controller.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCrud.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ControllerCrud.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerC.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerR.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCr.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCrd.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCru.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCu.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+    <None Include="ControllerRu.cs">
+      <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+  </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.8" />
-    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.6" />
+    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.10" />
+    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.3" />
   </ItemGroup>
 
 </Project>

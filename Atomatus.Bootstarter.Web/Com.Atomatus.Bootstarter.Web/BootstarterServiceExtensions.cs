@@ -29,6 +29,7 @@ namespace Com.Atomatus.Bootstarter.Web
         public static IMvcBuilder AddBootstarters([NotNull] this IServiceCollection services, [AllowNull] IConfiguration configuration = null)
         {
             return services
+                .AddLogService()
                 .AddVersioning()
                 .AddSwagger(configuration)
                 .AddControllers();
@@ -36,7 +37,7 @@ namespace Com.Atomatus.Bootstarter.Web
 
         /// <summary>
         /// <para>
-        /// Enable usage of follow (bootstarters) services to application.
+        /// Enable usage of following (bootstarters) services to application.
         /// </para>
         /// <para>
         /// ● <see cref="VersioningExtensions.UseVersionsing(IApplicationBuilder)"/><br/>
