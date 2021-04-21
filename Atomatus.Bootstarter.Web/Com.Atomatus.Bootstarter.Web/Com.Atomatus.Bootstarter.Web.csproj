@@ -12,7 +12,7 @@
     <Description>Sytem library for web RESTFul API to boot starter entity framework projects by domain aplication and hexagonal architecture usage.</Description>
     <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
     <PackageTags>ef boot starter RESTFul API</PackageTags>
-    <PackageVersion>0.0.3</PackageVersion>
+    <PackageVersion>0.0.4</PackageVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
@@ -42,9 +42,6 @@
     <None Include="ControllerCrud.Base.Async.cs">
       <DependentUpon>Controller.Base.cs</DependentUpon>
     </None>
-    <None Include="ControllerCrud.Async.cs">
-      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +68,33 @@
     </None>
     <None Include="ControllerRu.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ControllerCrud.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerC.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerR.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCr.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCrd.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCru.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerCu.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
+    </None>
+    <None Include="ControllerRu.Async.cs">
+      <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
     </None>
   </ItemGroup>
   
