@@ -16,6 +16,56 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
+    /// └─► <see cref="ControllerCrudAsync{TService, TModel, TID}.CreateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerCrudAsync{TService, TModel, TID}.GetAsync(CancellationToken)"/><br/>
+    /// ├─► <see cref="ControllerCrudAsync{TService, TModel, TID}.GetAsync(Guid)"/><br/>
+    /// └─► <see cref="ControllerCrudAsync{TService, TModel, TID}.GetAsync(TID)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[U]pdate:<br/>
+    /// └─► <see cref="ControllerCrudAsync{TService, TModel, TID}.UpdateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[D]elete:<br/>
+    /// └─► <see cref="ControllerCrudAsync{TService, TModel, TID}.DeleteAsync(Guid)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    /// <typeparam name="TID">entity model id type</typeparam>
+    public abstract class ControllerCrudAsync<TModel, TID> : ControllerCrudAsync<IServiceCrudAsync<TModel, TID>, TModel, TID>
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCrudAsync(IServiceCrudAsync<TModel, TID> service, ILogger<ControllerCrudAsync<TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller CRUD constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCrudAsync(IServiceCrudAsync<TModel, TID> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller async CRUD ([C]reate, [R]ead, [U]pdate and [D]elete) operations implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[C]reate:<br/>
     /// └─► <see cref="CreateAsync(TModel)"/>
     /// </para>
     /// 

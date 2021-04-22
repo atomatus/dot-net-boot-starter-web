@@ -13,6 +13,40 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerR{TService, TModel, TID}.Get()"/><br/>
+    /// ├─► <see cref="ControllerR{TService, TModel, TID}.Get(Guid)"/><br/>
+    /// └─► <see cref="ControllerR{TService, TModel, TID}.Get(TID)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    /// <typeparam name="TID">entity model id type</typeparam>
+    public abstract class ControllerR<TModel, TID> : ControllerR<IServiceCrud<TModel, TID>, TModel, TID>
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerR(IServiceCrud<TModel, TID> service, ILogger<ControllerR<TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerR(IServiceCrud<TModel, TID> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller [R]ead Operation implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// <para>
+    /// ┌[R]ead:<br/>
     /// ├─► <see cref="Get()"/><br/>
     /// ├─► <see cref="Get(Guid)"/><br/>
     /// └─► <see cref="Get(TID)"/>

@@ -14,6 +14,46 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
+    /// └─► <see cref="ControllerCr{TService, TModel, TID}.Create(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerCr{TService, TModel, TID}.Get()"/><br/>
+    /// ├─► <see cref="ControllerCr{TService, TModel, TID}.Get(Guid)"/><br/>
+    /// └─► <see cref="ControllerCr{TService, TModel, TID}.Get(TID)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    /// <typeparam name="TID">entity model id type</typeparam>
+    public abstract class ControllerCr<TModel, TID> : ControllerCr<IServiceCrud<TModel, TID>, TModel, TID>
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCr(IServiceCrud<TModel, TID> service, ILogger<ControllerCr<TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCr(IServiceCrud<TModel, TID> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller to [C]reate and [R]ead Operations implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[C]reate:<br/>
     /// └─► <see cref="Create(TModel)"/>
     /// </para>
     /// 

@@ -13,6 +13,44 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[C]reate:<br/>
+    /// └─► <see cref="ControllerCuAsync{TService, TModel, TID}.CreateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[U]pdate:<br/>
+    /// └─► <see cref="ControllerCuAsync{TService, TModel, TID}.UpdateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// </summary>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    /// <typeparam name="TID">entity model id type</typeparam>
+    public abstract class ControllerCuAsync<TModel, TID> : ControllerCuAsync<IServiceCrudAsync<TModel, TID>, TModel, TID>
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCuAsync(IServiceCrudAsync<TModel, TID> service, ILogger<ControllerCuAsync<TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCuAsync(IServiceCrudAsync<TModel, TID> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller [C]reate and [U]pdate async operation implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// <para>
+    /// ┌[C]reate:<br/>
     /// └─► <see cref="CreateAsync(TModel)"/>
     /// </para>
     /// 

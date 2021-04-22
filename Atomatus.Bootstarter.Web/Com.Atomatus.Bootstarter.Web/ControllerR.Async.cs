@@ -15,6 +15,41 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerRAsync{TService, TModel, TID}.GetAsync(CancellationToken)"/><br/>
+    /// ├─► <see cref="ControllerRAsync{TService, TModel, TID}.GetAsync(Guid)"/><br/>
+    /// └─► <see cref="ControllerRAsync{TService, TModel, TID}.GetAsync(TID)"/>
+    /// </para>
+    /// 
+    /// </summary>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    /// <typeparam name="TID">entity model id type</typeparam>
+    public abstract class ControllerRAsync<TModel, TID> : ControllerRAsync<IServiceCrudAsync<TModel, TID>, TModel, TID>        
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerRAsync(IServiceCrudAsync<TModel, TID> service, ILogger<ControllerRAsync<TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerRAsync(IServiceCrudAsync<TModel, TID> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller [R]ead async operation implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// <para>
+    /// ┌[R]ead:<br/>
     /// ├─► <see cref="GetAsync(CancellationToken)"/><br/>
     /// ├─► <see cref="GetAsync(Guid)"/><br/>
     /// └─► <see cref="GetAsync(TID)"/>
