@@ -1,11 +1,16 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
@@ -19,6 +24,64 @@ namespace Com.Atomatus.Bootstarter.Web
         static SwaggerServiceExtensions()
         {
             versions = new Lazy<ConcurrentBag<string>>();
+        }
+
+        private static IEnumerable<IConfigurationSection> FindAllKey(this IConfiguration config, string key)
+        {
+            List<IConfigurationSection> found = new List<IConfigurationSection>();
+
+            foreach (IConfigurationSection section in config.GetChildren())
+            {
+                if (section.Exists())
+                {
+                    if (key.Equals(section.Key, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        found.Add(section);
+                        continue;
+                    }
+                    else
+                    {
+                        found.AddRange(section.FindAllKey(key));
+                    }
+                }
+            }
+
+            return found;
+        }
+
+        private static void RequestLaunchSettingsWithLaunchUrlSwaggerInDebugMode(
+            [NotNull] this IApplicationBuilder app,
+            [AllowNull] IWebHostEnvironment env)
+        {
+            env ??= app.ApplicationServices.GetService<IWebHostEnvironment>();
+
+            if (env.IsDevelopment() &&
+                env.ContentRootFileProvider.GetDirectoryContents("Properties") is IDirectoryContents props &&
+                props.Exists &&
+                props.FirstOrDefault(f => !f.IsDirectory && 
+                    "launchSettings.json".Equals(f.Name, StringComparison.CurrentCultureIgnoreCase)) is IFileInfo launchSettings)
+            {
+                var config = new ConfigurationBuilder()
+                    .AddJsonStream(launchSettings.CreateReadStream())
+                    .Build();
+
+                var founds = config.FindAllKey("launchUrl");
+                if (founds.Any() &&
+                    founds.All(s => !"swagger".StartsWith(s.Value, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    ConsoleLog
+                        .Warn()
+                        .Console()
+                        .Debug()
+                        .WriteLine("The usage of Swagger has been enabled it.")
+                        .WriteLine("However, I identified that none of the launchUrl in your")
+                        .WriteLine("\"Properties/launchSettings.json\" file was set to \"swagger\".")
+                        .WriteLine("I suggest that you change it for a better experience during development mode.")
+                        .WriteLine("But, whether you know it and does not want to do it.")
+                        .WriteLine("Ok, it`s only a tip :).")
+                        .Dispose();
+                }
+            }
         }
 
         /// <summary>
@@ -72,7 +135,9 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSwagger([NotNull] this IServiceCollection services, [AllowNull] IConfiguration configuration = null)
+        public static IServiceCollection AddSwagger(
+            [NotNull] this IServiceCollection services, 
+            [AllowNull] IConfiguration configuration = null)
         {
             configuration ??= services.BuildServiceProvider().GetService<IConfiguration>();
             return services.AddSwaggerGen(options =>
@@ -95,10 +160,15 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </i>
         /// </summary>
         /// <param name="app">application configuration builder</param>
+        /// <param name="env">web hosting environment for running application</param>
         /// <param name="provider">provider that discovers and describes API version information within an application.</param>
         /// <returns>application configuration builder</returns>
-        public static IApplicationBuilder UseSwagger([NotNull] this IApplicationBuilder app, [AllowNull] IApiVersionDescriptionProvider provider = null)
-        {            
+        public static IApplicationBuilder UseSwagger(
+            [NotNull] this IApplicationBuilder app, 
+            [AllowNull] IWebHostEnvironment env = null,
+            [AllowNull] IApiVersionDescriptionProvider provider = null)
+        {
+            app.RequestLaunchSettingsWithLaunchUrlSwaggerInDebugMode(env);
             return SwaggerBuilderExtensions.UseSwagger(app)
                .UseSwaggerUI(c =>
                {

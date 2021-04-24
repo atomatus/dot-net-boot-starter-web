@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Com.Atomatus.Bootstarter.Web
@@ -13,6 +15,14 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </summary>
     public static class BootstarterServiceExtensions
     {
+        private static IApplicationBuilder UseDeveloperExceptionPageInDevelopment(
+            [NotNull] this IApplicationBuilder app,
+            [AllowNull] ref IWebHostEnvironment env)
+        {
+            env ??= app.ApplicationServices.GetService<IWebHostEnvironment>();
+            return env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app;
+        }
+
         /// <summary>
         /// <para>
         /// Add bootstarters services:
@@ -41,7 +51,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </para>
         /// <para>
         /// ● <see cref="VersioningExtensions.UseVersionsing(IApplicationBuilder)"/><br/>
-        /// ● <see cref="SwaggerServiceExtensions.UseSwagger(IApplicationBuilder, IApiVersionDescriptionProvider)"/><br/>
+        /// ● <see cref="SwaggerServiceExtensions.UseSwagger(IApplicationBuilder, IWebHostEnvironment, IApiVersionDescriptionProvider)"/><br/>
         /// ● <see cref="HttpsPolicyBuilderExtensions.UseHttpsRedirection(IApplicationBuilder)"/><br/>
         /// ● <see cref="AuthorizationAppBuilderExtensions.UseAuthorization(IApplicationBuilder)"/><br/>
         /// ● <see cref="EndpointRoutingApplicationBuilderExtensions.UseRouting(IApplicationBuilder)"/><br/>
@@ -49,13 +59,18 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </para>
         /// </summary>
         /// <param name="app">application configuration builder</param>
+        /// <param name="env">web hosting environment for running application</param>
         /// <param name="provider">provider that discovers and describes API version information within an application.</param>
         /// <returns>application configuration builder</returns>
-        public static IApplicationBuilder UseBootstarters([NotNull] this IApplicationBuilder app, [AllowNull] IApiVersionDescriptionProvider provider = null)
+        public static IApplicationBuilder UseBootstarters(
+            [NotNull] this IApplicationBuilder app,
+            [AllowNull] IWebHostEnvironment env = null,
+            [AllowNull] IApiVersionDescriptionProvider provider = null)
         {
             return app
+                .UseDeveloperExceptionPageInDevelopment(ref env)
                 .UseVersionsing()
-                .UseSwagger(provider)
+                .UseSwagger(env, provider)
                 .UseHttpsRedirection()
                 .UseAuthorization()
                 .UseRouting()
