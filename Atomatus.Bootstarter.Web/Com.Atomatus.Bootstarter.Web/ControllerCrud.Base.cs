@@ -83,7 +83,7 @@ namespace Com.Atomatus.Bootstarter.Web
                     throw new InvalidOperationException("Already exists a register with this UUID!");
                 }
 
-                return Ok(service.Insert(result));
+                return Ok(service.Save(result));
             }
             catch (Exception ex)
             {
@@ -287,13 +287,13 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentException("Invalid uuid!");
                 }
-                else if (!service.Exists(uuid))
+                else if (!service.ExistsByUuid(uuid))
                 {
                     logger.LogD("Uuid {0} not found to {1}.",
                         args: new object[] { uuid, typeof(TModel).Name });
                     return NotFound();
                 }
-                else if (service.Delete(uuid))
+                else if (service.DeleteByUuid(uuid))
                 {
                     return Ok();
                 }

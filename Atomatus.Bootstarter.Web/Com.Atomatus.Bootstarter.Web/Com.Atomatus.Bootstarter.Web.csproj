@@ -12,7 +12,7 @@
     <Description>Sytem library for web RESTFul API to boot starter entity framework projects by domain aplication and hexagonal architecture usage.</Description>
     <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
     <PackageTags>ef boot starter RESTFul API</PackageTags>
-    <PackageVersion>0.0.6</PackageVersion>
+    <PackageVersion>0.0.7</PackageVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
@@ -24,6 +24,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>privatekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>1.0.0.7</AssemblyVersion>
+    <FileVersion>1.0.0.7</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -101,7 +103,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.13" />
+    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.15" />
     <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />

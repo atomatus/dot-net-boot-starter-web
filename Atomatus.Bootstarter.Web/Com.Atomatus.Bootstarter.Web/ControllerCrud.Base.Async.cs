@@ -85,7 +85,7 @@ namespace Com.Atomatus.Bootstarter.Web
                     throw new InvalidOperationException("Already exists a register with this UUID!");
                 }
 
-                return Ok(await service.InsertAsync(result));
+                return Ok(await service.SaveAsync(result));
             }
             catch (Exception ex)
             {
@@ -190,7 +190,7 @@ namespace Com.Atomatus.Bootstarter.Web
                     throw new ArgumentException("Invalid uuid!");
                 }
 
-                var result = await service.GetAsync(uuid);
+                var result = await service.GetByUuidAsync(uuid);
                 if (result == null)
                 {
                     logger.LogD("Uuid {0} not found to {1}.",
@@ -293,13 +293,13 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentException("Invalid uuid!");
                 }
-                else if (!await service.ExistsAsync(uuid))
+                else if (!await service.ExistsByUuidAsync(uuid))
                 {
                     logger.LogD("Uuid {0} not found to {1}.",
                         args: new object[] { uuid, typeof(TModel).Name });
                     return NotFound();
                 }
-                else if (await service.DeleteAsync(uuid))
+                else if (await service.DeleteByUuidAsync(uuid))
                 {
                     return Ok();
                 }
