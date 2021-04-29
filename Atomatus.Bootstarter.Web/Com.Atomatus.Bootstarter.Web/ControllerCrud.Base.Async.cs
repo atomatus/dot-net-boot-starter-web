@@ -27,7 +27,6 @@ namespace Com.Atomatus.Bootstarter.Web
     /// ┌[R]ead:<br/>
     /// ├─► <see cref="GetActionAsync(CancellationToken)"/><br/>
     /// ├─► <see cref="GetActionAsync(Guid)"/><br/>
-    /// └─► <see cref="GetActionAsync(ID)"/>
     /// </para>
     /// 
     /// <para>
@@ -42,10 +41,9 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </summary>
     /// <typeparam name="TService">target service type to data persistence</typeparam>
     /// <typeparam name="TModel">target model type</typeparam>  
-    /// <typeparam name="ID">target id model type</typeparam>
-    public abstract class ControllerCrudBaseAsync<TService, TModel, ID> : ControllerBase<TService, TModel>
-        where TService : IServiceCrudAsync<TModel, ID>
-        where TModel : IModel<ID>
+    public abstract class ControllerCrudBaseAsync<TService, TModel> : ControllerBase<TService, TModel>
+        where TService : IServiceCrudAsync<TModel>
+        where TModel : IModel
     {
         /// <summary>
         /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
@@ -53,8 +51,8 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCrudBaseAsync(TService service, ILogger<ControllerCrudBaseAsync<TService, TModel, ID>> logger) : base(service, logger) { }
-        
+        protected ControllerCrudBaseAsync(TService service, ILogger<ControllerCrudBaseAsync<TService, TModel>> logger) : base(service, logger) { }
+
         /// <summary>
         /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
         /// The follow parameters can be set by dependency injection.<br/>
@@ -121,42 +119,6 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     logger.LogD("No content!");
                     return NoContent();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogE(ex);
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// <para>Perform a request operation to find register by id.</para>
-        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
-        /// ● Not Found: Does not exists register with id.<br/>
-        /// ● Bad Request: some error in request.
-        /// </para>
-        /// </summary>
-        /// <param name="id">targer id</param>
-        /// <returns>action result task</returns>    
-        [NonAction]
-        protected async Task<IActionResult> GetActionAsync(ID id)
-        {
-            try
-            {
-                this.RequireValidId(id);
-
-                var result = await service.GetAsync(id);
-
-                if (result == null)
-                {
-                    logger.LogD("Id {0} NotFound", args: id);
-                    return NotFound();
                 }
 
                 return Ok(result);
@@ -305,6 +267,100 @@ namespace Com.Atomatus.Bootstarter.Web
                 }
 
                 throw new InvalidOperationException("Was not possible to remove value!");
+            }
+            catch (Exception ex)
+            {
+                logger.LogE(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// <para>
+    /// API Controller CRUD base async implementing
+    /// the default route "api/v{version:apiVersion}/[controller]" 
+    /// and produces an "application/json" as default.
+    /// </para>
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[C]reate:<br/>
+    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.CreateActionAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerCrudBaseAsync{TService, TModel}.GetActionAsync(CancellationToken)"/><br/>
+    /// ├─► <see cref="ControllerCrudBaseAsync{TService, TModel}.GetActionAsync(Guid)"/><br/>
+    /// └─► <see cref="GetActionAsync(ID)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[U]pdate:<br/>
+    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.UpdateActionAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[D]elete:<br/>
+    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.DeleteActionAsync(Guid)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TService">target service type to data persistence</typeparam>
+    /// <typeparam name="TModel">target model type</typeparam>  
+    /// <typeparam name="ID">target id model type</typeparam>
+    public abstract class ControllerCrudBaseAsync<TService, TModel, ID> : ControllerCrudBaseAsync<TService, TModel>
+        where TService : IServiceCrudAsync<TModel, ID>
+        where TModel : IModel<ID>
+    {
+        /// <summary>
+        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCrudBaseAsync(TService service, ILogger<ControllerCrudBaseAsync<TService, TModel, ID>> logger) : base(service, logger) { }
+        
+        /// <summary>
+        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCrudBaseAsync(TService service) : base(service) { }
+
+        #region [R]ead        
+        /// <summary>
+        /// <para>Perform a request operation to find register by id.</para>
+        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains result.<br/>
+        /// ● Not Found: Does not exists register with id.<br/>
+        /// ● Bad Request: some error in request.
+        /// </para>
+        /// </summary>
+        /// <param name="id">targer id</param>
+        /// <returns>action result task</returns>    
+        [NonAction]
+        protected async Task<IActionResult> GetActionAsync(ID id)
+        {
+            try
+            {
+                this.RequireValidId(id);
+
+                var result = await service.GetAsync(id);
+
+                if (result == null)
+                {
+                    logger.LogD("Id {0} NotFound", args: id);
+                    return NotFound();
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

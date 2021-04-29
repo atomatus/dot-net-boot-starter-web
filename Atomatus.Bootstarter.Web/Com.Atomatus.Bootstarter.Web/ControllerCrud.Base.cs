@@ -25,7 +25,6 @@ namespace Com.Atomatus.Bootstarter.Web
     /// ┌[R]ead:<br/>
     /// ├─► <see cref="GetAction()"/><br/>
     /// ├─► <see cref="GetAction(Guid)"/><br/>
-    /// └─► <see cref="GetAction(TID)"/>
     /// </para>
     /// 
     /// <para>
@@ -39,11 +38,10 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// </summary>
     /// <typeparam name="TService">target service type to data persistence</typeparam>
-    /// <typeparam name="TModel">target model type</typeparam>  
-    /// <typeparam name="TID">target id model type</typeparam>
-    public abstract class ControllerCrudBase<TService, TModel, TID> : ControllerBase<TService, TModel>
-        where TService : IServiceCrud<TModel, TID>
-        where TModel : IModel<TID>
+    /// <typeparam name="TModel">target model type</typeparam>
+    public abstract class ControllerCrudBase<TService, TModel> : ControllerBase<TService, TModel>
+        where TService : IServiceCrud<TModel>
+        where TModel : IModel
     {
         /// <summary>
         /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
@@ -51,7 +49,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCrudBase(TService service, ILogger<ControllerCrudBase<TService, TModel, TID>> logger) : base(service, logger) { }
+        protected ControllerCrudBase(TService service, ILogger<ControllerCrudBase<TService, TModel>> logger) : base(service, logger) { }
 
         /// <summary>
         /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
@@ -117,42 +115,6 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     logger.LogD("No content!");
                     return NoContent();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogE(ex);
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// <para>Perform a request operation to find register by id.</para>
-        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
-        /// ● Not Found: Does not exists register with id.<br/>
-        /// ● Bad Request: some error in request.
-        /// </para>
-        /// </summary>
-        /// <param name="id">targer id</param>
-        /// <returns>action result</returns>    
-        [NonAction]
-        protected IActionResult GetAction(TID id)
-        {
-            try
-            {
-                this.RequireValidId(id);
-
-                var result = service.Get(id);
-
-                if (result == null)
-                {
-                    logger.LogD("Id {0} not found!", args: id);
-                    return NotFound();
                 }
 
                 return Ok(result);
@@ -299,6 +261,100 @@ namespace Com.Atomatus.Bootstarter.Web
                 }
 
                 throw new InvalidOperationException("Was not possible to remove value!");
+            }
+            catch (Exception ex)
+            {
+                logger.LogE(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// <para>
+    /// API Controller CRUD base implementing
+    /// the default route "api/v{version:apiVersion}/[controller]" 
+    /// and produces an "application/json" as default.
+    /// </para>
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[C]reate:<br/>
+    /// └─► <see cref="ControllerCrudBase{TService, TModel}.CreateAction(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[R]ead:<br/>
+    /// ├─► <see cref="ControllerCrudBase{TService, TModel}.GetAction()"/><br/>
+    /// ├─► <see cref="ControllerCrudBase{TService, TModel}.GetAction(Guid)"/><br/>
+    /// └─► <see cref="GetAction(TID)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[U]pdate:<br/>
+    /// └─► <see cref="ControllerCrudBase{TService, TModel}.UpdateAction(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[D]elete:<br/>
+    /// └─► <see cref="ControllerCrudBase{TService, TModel}.DeleteAction(Guid)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TService">target service type to data persistence</typeparam>
+    /// <typeparam name="TModel">target model type</typeparam>  
+    /// <typeparam name="TID">target id model type</typeparam>
+    public abstract class ControllerCrudBase<TService, TModel, TID> : ControllerCrudBase<TService, TModel>
+        where TService : IServiceCrud<TModel, TID>
+        where TModel : IModel<TID>
+    {
+        /// <summary>
+        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCrudBase(TService service, ILogger<ControllerCrudBase<TService, TModel, TID>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCrudBase(TService service) : base(service) { }
+
+        #region [R]ead        
+        /// <summary>
+        /// <para>Perform a request operation to find register by id.</para>
+        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains result.<br/>
+        /// ● Not Found: Does not exists register with id.<br/>
+        /// ● Bad Request: some error in request.
+        /// </para>
+        /// </summary>
+        /// <param name="id">targer id</param>
+        /// <returns>action result</returns>    
+        [NonAction]
+        protected IActionResult GetAction(TID id)
+        {
+            try
+            {
+                this.RequireValidId(id);
+
+                var result = service.Get(id);
+
+                if (result == null)
+                {
+                    logger.LogD("Id {0} not found!", args: id);
+                    return NotFound();
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

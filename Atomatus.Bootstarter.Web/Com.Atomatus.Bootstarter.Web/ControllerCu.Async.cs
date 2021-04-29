@@ -13,19 +13,18 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerCuAsync{TService, TModel, TID}.CreateAsync(TModel)"/>
+    /// └─► <see cref="ControllerCuAsync{TService, TModel}.CreateAsync(TModel)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="ControllerCuAsync{TService, TModel, TID}.UpdateAsync(TModel)"/>
+    /// └─► <see cref="ControllerCuAsync{TService, TModel}.UpdateAsync(TModel)"/>
     /// </para>
     /// 
     /// </summary>
     /// <typeparam name="TModel">entity model type</typeparam>
-    /// <typeparam name="TID">entity model id type</typeparam>
-    public abstract class ControllerCuAsync<TModel, TID> : ControllerCuAsync<IServiceCrudAsync<TModel, TID>, TModel, TID>
-        where TModel : IModel<TID>
+    public abstract class ControllerCuAsync<TModel> : ControllerCuAsync<IServiceCrudAsync<TModel>, TModel>
+        where TModel : IModel
     {
         /// <summary>
         /// Controller constructor with service data persistence and logging perform.<br/>
@@ -33,7 +32,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCuAsync(IServiceCrudAsync<TModel, TID> service, ILogger<ControllerCuAsync<TModel, TID>> logger) : base(service, logger) { }
+        protected ControllerCuAsync(IServiceCrudAsync<TModel> service, ILogger<ControllerCuAsync<TModel>> logger) : base(service, logger) { }
 
         /// <summary>
         /// Controller constructor with service data persistence and logging perform.<br/>
@@ -41,7 +40,79 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerCuAsync(IServiceCrudAsync<TModel, TID> service) : base(service) { }
+        protected ControllerCuAsync(IServiceCrudAsync<TModel> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller [C]reate and [U]pdate async operation implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// <para>
+    /// ┌[C]reate:<br/>
+    /// └─► <see cref="CreateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// ┌[U]pdate:<br/>
+    /// └─► <see cref="UpdateAsync(TModel)"/>
+    /// </para>
+    /// 
+    /// </summary>
+    /// <typeparam name="TService">target service to data persistence</typeparam>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    public abstract class ControllerCuAsync<TService, TModel> : ControllerCrudBaseAsync<TService, TModel>
+        where TService : IServiceCrudAsync<TModel>
+        where TModel : IModel
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCuAsync(TService service, ILogger<ControllerCuAsync<TService, TModel>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCuAsync(TService service) : base(service) { }
+
+        #region [C]reate
+        /// <summary>
+        /// <para>Perform a write operation to persist data.</para>
+        /// <i>https://api.urladdress/v1 (POST Method/ Model data from body)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains model with Uuid.<br/>
+        /// ● Bad Request: Aleady exists or some another error.
+        /// </para>
+        /// </summary>
+        /// <param name="result">model from body</param>
+        /// <returns>action result task</returns>        
+        [HttpPost]
+        public virtual Task<IActionResult> CreateAsync([FromBody] TModel result) => CreateActionAsync(result);
+        #endregion
+
+        #region [U]pdate
+        /// <summary>
+        /// <para>Perform a write operation to update data.</para>
+        /// <i>https://api.urladdress/v1 (PUT Method/ Model data from body)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, data updated.<br/>
+        /// ● Not Found: target data does not exists.<br/>
+        /// ● Bad Request: some error.
+        /// </para>
+        /// </summary>
+        /// <param name="result">model from body</param>
+        /// <returns>action result task</returns>        
+        [HttpPut]
+        public virtual Task<IActionResult> UpdateAsync([FromBody] TModel result) => UpdateActionAsync(result);
+        #endregion
     }
 
     /// <summary>

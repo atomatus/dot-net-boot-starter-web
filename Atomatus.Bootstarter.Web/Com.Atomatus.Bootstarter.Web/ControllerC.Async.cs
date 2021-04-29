@@ -13,13 +13,12 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerCAsync{TService, TModel, TID}.CreateAsync(TModel)"/>
+    /// └─► <see cref="ControllerCAsync{TService, TModel}.CreateAsync(TModel)"/>
     /// </para>
     /// </summary>
     /// <typeparam name="TModel">entity model type</typeparam>
-    /// <typeparam name="TID">entity model id type</typeparam>
-    public abstract class ControllerCAsync<TModel, TID> : ControllerCAsync<IServiceCrudAsync<TModel, TID>, TModel, TID>
-        where TModel : IModel<TID>
+    public abstract class ControllerCAsync<TModel> : ControllerCAsync<IServiceCrudAsync<TModel>, TModel>
+        where TModel : IModel
     {
         /// <summary>
         /// Controller constructor with service data persistence and logging perform.<br/>
@@ -27,7 +26,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerCAsync(IServiceCrudAsync<TModel, TID> service, ILogger<ControllerCAsync<TModel, TID>> logger) : base(service, logger) { }
+        protected ControllerCAsync(IServiceCrudAsync<TModel> service, ILogger<ControllerCAsync<TModel>> logger) : base(service, logger) { }
 
         /// <summary>
         /// Controller constructor with service data persistence and logging perform.<br/>
@@ -35,7 +34,56 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerCAsync(IServiceCrudAsync<TModel, TID> service) : base(service) { }
+        protected ControllerCAsync(IServiceCrudAsync<TModel> service) : base(service) { }
+    }
+
+    /// <summary>
+    /// Versioned Controller [C]reate async operation implementation for entity model using service.
+    /// <para>
+    /// This controller constains by default the following actions:<br/><br/>
+    /// </para>
+    /// <para>
+    /// ┌[C]reate:<br/>
+    /// └─► <see cref="CreateAsync(TModel)"/>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TService">target service to data persistence</typeparam>
+    /// <typeparam name="TModel">entity model type</typeparam>
+    public abstract class ControllerCAsync<TService, TModel> : ControllerCrudBaseAsync<TService, TModel>
+        where TService : IServiceCrudAsync<TModel>
+        where TModel : IModel
+    {
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        /// <param name="logger">logging target</param>
+        protected ControllerCAsync(TService service, ILogger<ControllerCAsync<TService, TModel>> logger) : base(service, logger) { }
+
+        /// <summary>
+        /// Controller constructor with service data persistence and logging perform.<br/>
+        /// The follow parameters can be set by dependency injection.<br/>
+        /// Using no logger performing.
+        /// </summary>
+        /// <param name="service">service to data persistence</param>
+        protected ControllerCAsync(TService service) : base(service) { }
+
+        #region [C]reate
+        /// <summary>
+        /// <para>Perform a write operation to persist data.</para>
+        /// <i>https://api.urladdress/v1 (POST Method/ Model data from body)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains model with Uuid.<br/>
+        /// ● Bad Request: Aleady exists or some another error.
+        /// </para>
+        /// </summary>
+        /// <param name="result">model from body</param>
+        /// <returns>action result task</returns>        
+        [HttpPost]
+        public virtual Task<IActionResult> CreateAsync([FromBody] TModel result) => CreateActionAsync(result);
+        #endregion
     }
 
     /// <summary>
