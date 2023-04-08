@@ -29,77 +29,77 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE">
+    <Compile Update="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\logo.png">
+    </Compile>
+    <Compile Update="..\..\logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </None>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ControllerCrud.Base.cs">
+    <Compile Update="ControllerCrud.Base.cs">
       <DependentUpon>Controller.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCrud.Base.Async.cs">
+    </Compile>
+    <Compile Update="ControllerCrud.Base.Async.cs">
       <DependentUpon>Controller.Base.cs</DependentUpon>
-    </None>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ControllerCrud.cs">
+    <Compile Update="ControllerCrud.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerC.cs">
+    </Compile>
+    <Compile Update="ControllerC.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerR.cs">
+    </Compile>
+    <Compile Update="ControllerR.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCr.cs">
+    </Compile>
+    <Compile Update="ControllerCr.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCrd.cs">
+    </Compile>
+    <Compile Update="ControllerCrd.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCru.cs">
+    </Compile>
+    <Compile Update="ControllerCru.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCu.cs">
+    </Compile>
+    <Compile Update="ControllerCu.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
-    <None Include="ControllerRu.cs">
+    </Compile>
+    <Compile Update="ControllerRu.cs">
       <DependentUpon>ControllerCrud.Base.cs</DependentUpon>
-    </None>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ControllerCrud.Async.cs">
+    <Compile Update="ControllerCrud.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerC.Async.cs">
+    </Compile>
+    <Compile Update="ControllerC.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerR.Async.cs">
+    </Compile>
+    <Compile Update="ControllerR.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCr.Async.cs">
+    </Compile>
+    <Compile Update="ControllerCr.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCrd.Async.cs">
+    </Compile>
+    <Compile Update="ControllerCrd.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCru.Async.cs">
+    </Compile>
+    <Compile Update="ControllerCru.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerCu.Async.cs">
+    </Compile>
+    <Compile Update="ControllerCu.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
-    <None Include="ControllerRu.Async.cs">
+    </Compile>
+    <Compile Update="ControllerRu.Async.cs">
       <DependentUpon>ControllerCrud.Base.Async.cs</DependentUpon>
-    </None>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>
