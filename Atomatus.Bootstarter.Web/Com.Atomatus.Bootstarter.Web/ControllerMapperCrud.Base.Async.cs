@@ -1,16 +1,17 @@
-﻿using Com.Atomatus.Bootstarter.Model;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Com.Atomatus.Bootstarter.Model;
 using Com.Atomatus.Bootstarter.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
     /// <summary>
+    /// <inheritdoc/>
     /// <para>
-    /// API Controller CRUD base async implementing
+    /// API Controller CRUD for DTO Mapper base async implementing
     /// the default route "api/v{version:apiVersion}/[controller]" 
     /// and produces an "application/json" as default.
     /// </para>
@@ -20,19 +21,20 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="CreateActionAsync(TModel)"/>
+    /// ├─► <see cref="CreateActionAsync{TDtoIn, TDtoOut}(TDtoIn)"/>
+    /// └─► <see cref="CreateActionAsync{TDtoIn}(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[R]ead:<br/>
-    /// ├─► <see cref="GetActionAsync(CancellationToken)"/><br/>
-    /// ├─► <see cref="GetActionAsync(Guid)"/><br/>
-    /// └─► <see cref="PagingActionAsync(int, int, CancellationToken)"/>
+    /// ├─► <see cref="GetActionAsync{TDtoOut}(CancellationToken)"/><br/>
+    /// ├─► <see cref="GetActionAsync{TDtoOut}(Guid)"/><br/>
+    /// └─► <see cref="PagingActionAsync{TDtoOut}(int, int, CancellationToken)"/><br/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="UpdateActionAsync(TModel)"/>
+    /// └─► <see cref="UpdateActionAsync{TDtoIn}(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
@@ -41,56 +43,78 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// </summary>
     /// <typeparam name="TService">target service type to data persistence</typeparam>
-    /// <typeparam name="TModel">target model type</typeparam>  
-    public abstract class ControllerCrudBaseAsync<TService, TModel> : ControllerBase<TService, TModel>
+    /// <typeparam name="TModel">target model type</typeparam>
+    public abstract class ControllerMapperCrudBaseAsync<TService, TModel> : ControllerMapperBase<TService, TModel>
         where TService : IServiceCrudAsync<TModel>
-        where TModel : IModel
+        where TModel : class, IModel, new()
     {
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        /// <param name="logger">logging target</param>
-        protected ControllerCrudBaseAsync(TService service, ILogger<ControllerCrudBaseAsync<TService, TModel>> logger) : base(service, logger) { }
+        /// <inheritdoc/>
+        public ControllerMapperCrudBaseAsync(TService service) : base(service) { }
 
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.<br/>
-        /// Using no logger performing.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        protected ControllerCrudBaseAsync(TService service) : base(service) { }
+        /// <inheritdoc/>
+        public ControllerMapperCrudBaseAsync(TService service, ILogger<ControllerMapperBase<TService, TModel>> logger) : base(service, logger) { }
 
         #region [C]reate
         /// <summary>
         /// <para>Perform a write operation to persist data.</para>
-        /// <i>https://api.urladdress/v1 (POST Method/ Model data from body)</i>
+        /// <i>https://api.urladdress/v1 (POST Method/ DTO data from body)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains model with Uuid.<br/>
+        /// ● OK: Successfully, contains DTO with Uuid.<br/>
         /// ● Bad Request: Aleady exists or some another error.
         /// </para>
         /// </summary>
-        /// <param name="result">model from body</param>
-        /// <returns>action result task</returns>        
+        /// <param name="result">DTO from body</param>
+        /// <returns>action result task</returns>    
+        /// <typeparam name="TDtoIn">DTO type source from body</typeparam>
+        /// <typeparam name="TDtoOut">DTO type result</typeparam>    
         [NonAction]
-        protected async Task<IActionResult> CreateActionAsync(TModel result)
+        protected async Task<IActionResult> CreateActionAsync<TDtoIn, TDtoOut>(TDtoIn dtoResult)
+            where TDtoIn : class, new()
+            where TDtoOut : class, new()
         {
             try
             {
-                if (await service.ExistsAsync(result))
+                if (dtoResult is null)
                 {
-                    throw new InvalidOperationException("Already exists a register with this UUID!");
+                    throw new ArgumentNullException(nameof(dtoResult));
                 }
 
-                return Ok(await service.SaveAsync(result));
+                TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
+
+                if (await service.ExistsAsync(result))
+                {
+                    throw new InvalidOperationException("This register already exists!");
+                }
+
+                result = await service.SaveAsync(result);
+                TDtoOut dtoOut = this.Parse<TModel, TDtoOut>(result);
+                return Ok(dtoOut);
             }
             catch (Exception ex)
             {
                 logger.LogE(ex);
                 return BadRequest(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// <para>Perform a write operation to persist data.</para>
+        /// <i>https://api.urladdress/v1 (POST Method/ DTO data from body)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains DTO with id.<br/>
+        /// ● Bad Request: Aleady exists or some another error.
+        /// </para>
+        /// </summary>
+        /// <param name="dtoResult">DTO from body</param>
+        /// <returns>action result</returns>
+        /// <typeparam name="TDtoIn">DTO type source and result</typeparam>
+        [NonAction]
+        protected Task<IActionResult> CreateActionAsync<TDtoIn>(TDtoIn dtoResult)
+            where TDtoIn : class, new()
+        {
+            return CreateActionAsync<TDtoIn, TDtoIn>(dtoResult);
         }
         #endregion
 
@@ -102,15 +126,17 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1 (GET Method)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result list.<br/>
+        /// ● OK: Successfully, contains dto result list.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// <i> This operation can be cancelled.</i>
         /// </summary>
         /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result task</returns>    
+        /// <typeparam name="TDtoOut">dto result type</typeparam>
         [NonAction]
-        protected async Task<IActionResult> GetActionAsync(CancellationToken cancellationToken)
+        protected async Task<IActionResult> GetActionAsync<TDtoOut>(CancellationToken cancellationToken)
+            where TDtoOut : class, new()
         {
             try
             {
@@ -122,7 +148,8 @@ namespace Com.Atomatus.Bootstarter.Web
                     return NoContent();
                 }
 
-                return Ok(result);
+                var dtoResult = this.ParseList<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -136,15 +163,17 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1/uuid/{uuid} (GET Method)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
+        /// ● OK: Successfully, contains dto result.<br/>
         /// ● Not Found: Does not exists register with uuid.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
         /// <param name="uuid">targer uuid</param>
         /// <returns>action result task</returns>    
+        /// <typeparam name="TDtoOut">dto result type</typeparam>
         [NonAction]
-        protected async Task<IActionResult> GetActionAsync(Guid uuid)
+        protected async Task<IActionResult> GetActionAsync<TDtoOut>(Guid uuid)
+            where TDtoOut : class, new()
         {
             try
             {
@@ -160,7 +189,9 @@ namespace Com.Atomatus.Bootstarter.Web
                         args: new object[] { uuid, typeof(TModel).Name });
                     return NotFound();
                 }
-                return Ok(result);
+
+                var dtoResult = this.Parse<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -175,7 +206,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1/page/{page} (GET Method, using default limit request of 300)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result or empty result.<br/>
+        /// ● OK: Successfully, contains dto result or empty result.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
@@ -185,12 +216,14 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result task</returns>    
         [NonAction]
-        protected async Task<IActionResult> PagingActionAsync(int page, int limit, CancellationToken cancellationToken)
+        protected async Task<IActionResult> PagingActionAsync<TDtoOut>(int page, int limit, CancellationToken cancellationToken)
+            where TDtoOut : class, new()
         {
             try
             {
                 var result = await service.PagingAsync(page, limit, cancellationToken);
-                return Ok(result);
+                var dtoResult = this.ParseList<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -203,21 +236,28 @@ namespace Com.Atomatus.Bootstarter.Web
         #region [U]pdate
         /// <summary>
         /// <para>Perform a write operation to update data.</para>
-        /// <i>https://api.urladdress/v1 (PUT Method/ Model data from body)</i>
+        /// <i>https://api.urladdress/v1 (PUT Method/ DTOdata from body)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, data updated.<br/>
-        /// ● Not Found: target data does not exists.<br/>
+        /// ● OK: Successfully, data dto updated.<br/>
+        /// ● Not Found: target data dto does not exists.<br/>
         /// ● Bad Request: some error.
         /// </para>
         /// </summary>
-        /// <param name="result">model from body</param>
+        /// <param name="result">DTO from body</param>
         /// <returns>action result task</returns>        
         [NonAction]
-        protected async Task<IActionResult> UpdateActionAsync(TModel result)
+        protected async Task<IActionResult> UpdateActionAsync<TDtoIn>(TDtoIn dtoResult) where TDtoIn : class, new()
         {
             try
             {
+                if (dtoResult is null)
+                {
+                    throw new ArgumentNullException(nameof(dtoResult));
+                }
+
+                TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
+
                 if (await service.ExistsAsync(result))
                 {
                     await service.UpdateAsync(result);
@@ -277,98 +317,5 @@ namespace Com.Atomatus.Bootstarter.Web
         }
         #endregion
     }
-
-    /// <summary>
-    /// <para>
-    /// API Controller CRUD base async implementing
-    /// the default route "api/v{version:apiVersion}/[controller]" 
-    /// and produces an "application/json" as default.
-    /// </para>
-    /// <para>
-    /// This controller constains by default the following actions:<br/><br/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.CreateActionAsync(TModel)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[R]ead:<br/>
-    /// ├─► <see cref="ControllerCrudBaseAsync{TService, TModel}.GetActionAsync(CancellationToken)"/><br/>
-    /// ├─► <see cref="ControllerCrudBaseAsync{TService, TModel}.GetActionAsync(Guid)"/><br/>
-    /// └─► <see cref="GetActionAsync(ID)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[U]pdate:<br/>
-    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.UpdateActionAsync(TModel)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[D]elete:<br/>
-    /// └─► <see cref="ControllerCrudBaseAsync{TService, TModel}.DeleteActionAsync(Guid)"/>
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TService">target service type to data persistence</typeparam>
-    /// <typeparam name="TModel">target model type</typeparam>  
-    /// <typeparam name="ID">target id model type</typeparam>
-    public abstract class ControllerCrudBaseAsync<TService, TModel, ID> : ControllerCrudBaseAsync<TService, TModel>
-        where TService : IServiceCrudAsync<TModel, ID>
-        where TModel : IModel<ID>
-    {
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        /// <param name="logger">logging target</param>
-        protected ControllerCrudBaseAsync(TService service, ILogger<ControllerCrudBaseAsync<TService, TModel, ID>> logger) : base(service, logger) { }
-        
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.<br/>
-        /// Using no logger performing.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        protected ControllerCrudBaseAsync(TService service) : base(service) { }
-
-        #region [R]ead        
-        /// <summary>
-        /// <para>Perform a request operation to find register by id.</para>
-        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
-        /// ● Not Found: Does not exists register with id.<br/>
-        /// ● Bad Request: some error in request.
-        /// </para>
-        /// </summary>
-        /// <param name="id">targer id</param>
-        /// <returns>action result task</returns>    
-        [NonAction]
-        protected async Task<IActionResult> GetActionAsync(ID id)
-        {
-            try
-            {
-                this.RequireValidId(id);
-
-                var result = await service.GetAsync(id);
-
-                if (result == null)
-                {
-                    logger.LogD("Id {0} NotFound", args: id);
-                    return NotFound();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogE(ex);
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
-    }
 }
+

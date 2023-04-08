@@ -1,14 +1,17 @@
-﻿using Com.Atomatus.Bootstarter.Model;
+﻿
+using System;
+using System.Collections.Generic;
+using Com.Atomatus.Bootstarter.Model;
 using Com.Atomatus.Bootstarter.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
     /// <summary>
+    /// <inheritdoc/>
     /// <para>
-    /// API Controller CRUD base implementing
+    /// API Controller CRUD for DTO Mapper base implementing
     /// the default route "api/v{version:apiVersion}/[controller]" 
     /// and produces an "application/json" as default.
     /// </para>
@@ -18,19 +21,20 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="CreateAction(TModel)"/>
+    /// ├─► <see cref="CreateAction{TDtoIn, TDtoOut}(TDtoIn)"/>
+    /// └─► <see cref="CreateAction{TDtoIn}(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[R]ead:<br/>
-    /// ├─► <see cref="GetAction()"/><br/>
-    /// ├─► <see cref="GetAction(Guid)"/><br/>
-    /// └─► <see cref="PagingAction(int, int)"/><br/>
+    /// ├─► <see cref="GetAction{TDtoOut}()"/><br/>
+    /// ├─► <see cref="GetAction{TDtoOut}(Guid)"/><br/>
+    /// └─► <see cref="PagingAction{TDtoOut}(int, int)"/><br/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="UpdateAction(TModel)"/>
+    /// └─► <see cref="UpdateAction{TDtoIn}(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
@@ -40,55 +44,77 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </summary>
     /// <typeparam name="TService">target service type to data persistence</typeparam>
     /// <typeparam name="TModel">target model type</typeparam>
-    public abstract class ControllerCrudBase<TService, TModel> : ControllerBase<TService, TModel>
+    public abstract class ControllerMapperCrudBase<TService, TModel> : ControllerMapperBase<TService, TModel>
         where TService : IServiceCrud<TModel>
-        where TModel : IModel
+        where TModel : class, IModel, new()
     {
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        /// <param name="logger">logging target</param>
-        protected ControllerCrudBase(TService service, ILogger<ControllerCrudBase<TService, TModel>> logger) : base(service, logger) { }
+        /// <inheritdoc/>
+        protected ControllerMapperCrudBase(TService service) : base(service) { }
 
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.<br/>
-        /// Using no logger performing.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        protected ControllerCrudBase(TService service) : base(service) { }
+        /// <inheritdoc/>
+        protected ControllerMapperCrudBase(TService service, ILogger<ControllerMapperCrudBase<TService, TModel>> logger) : base(service, logger) { }
 
         #region [C]reate
         /// <summary>
         /// <para>Perform a write operation to persist data.</para>
-        /// <i>https://api.urladdress/v1 (POST Method/ Model data from body)</i>
+        /// <i>https://api.urladdress/v1 (POST Method/ DTO data from body)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains model with Uuid.<br/>
+        /// ● OK: Successfully, contains DTO with id.<br/>
         /// ● Bad Request: Aleady exists or some another error.
         /// </para>
         /// </summary>
-        /// <param name="result">model from body</param>
-        /// <returns>action result</returns>        
+        /// <param name="dtoResult">DTO from body</param>
+        /// <returns>action result</returns>
+        /// <typeparam name="TDtoIn">DTO type source from body</typeparam>
+        /// <typeparam name="TDtoOut">DTO type result</typeparam>
         [NonAction]
-        protected IActionResult CreateAction(TModel result)
+        protected IActionResult CreateAction<TDtoIn, TDtoOut>(TDtoIn dtoResult)
+            where TDtoIn : class, new()
+            where TDtoOut : class, new()
         {
             try
             {
-                if (service.Exists(result))
+                if(dtoResult is null)
                 {
-                    throw new InvalidOperationException("Already exists a register with this UUID!");
+                    throw new ArgumentNullException(nameof(dtoResult));
                 }
 
-                return Ok(service.Save(result));
+                TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
+
+                if (service.Exists(result))
+                {
+                    throw new InvalidOperationException("This register already exists!");
+                }
+
+                result = service.Save(result);
+                TDtoOut dtoOut = this.Parse<TModel, TDtoOut>(result);
+                return Ok(dtoOut);
             }
             catch (Exception ex)
             {
                 logger.LogE(ex);
                 return BadRequest(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// <para>Perform a write operation to persist data.</para>
+        /// <i>https://api.urladdress/v1 (POST Method/ DTO data from body)</i>
+        /// <para>
+        /// Results<br/>
+        /// ● OK: Successfully, contains DTO with id.<br/>
+        /// ● Bad Request: Aleady exists or some another error.
+        /// </para>
+        /// </summary>
+        /// <param name="dtoResult">DTO from body</param>
+        /// <returns>action result</returns>
+        /// <typeparam name="TDtoIn">DTO type source and result</typeparam>
+        [NonAction]
+        protected IActionResult CreateAction<TDtoIn>(TDtoIn dtoResult)
+            where TDtoIn : class, new()
+        {
+            return CreateAction<TDtoIn, TDtoIn>(dtoResult);
         }
         #endregion
 
@@ -100,13 +126,15 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1 (GET Method)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result list.<br/>
+        /// ● OK: Successfully, contains dto result list.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
-        /// <returns>action result</returns>    
+        /// <returns>action result</returns>
+        /// <typeparam name="TDtoOut">dto result type</typeparam>
         [NonAction]
-        protected IActionResult GetAction()
+        protected IActionResult GetAction<TDtoOut>()
+            where TDtoOut : class, new()
         {
             try
             {
@@ -118,7 +146,8 @@ namespace Com.Atomatus.Bootstarter.Web
                     return NoContent();
                 }
 
-                return Ok(result);
+                var dtoResult = this.ParseList<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -132,15 +161,17 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1/uuid/{uuid} (GET Method)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
+        /// ● OK: Successfully, contains dto result.<br/>
         /// ● Not Found: Does not exists register with uuid.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
         /// <param name="uuid">targer uuid</param>
         /// <returns>action result</returns>    
+        /// <typeparam name="TDtoOut">dto result type</typeparam>
         [NonAction]
-        protected IActionResult GetAction(Guid uuid)
+        protected IActionResult GetAction<TDtoOut>(Guid uuid)
+            where TDtoOut : class, new()
         {
             try
             {
@@ -150,13 +181,15 @@ namespace Com.Atomatus.Bootstarter.Web
                 }
 
                 var result = service.GetByUuid(uuid);
-                if (result == null)
+                if (result is null)
                 {
                     logger.LogD("Uuid {0} not found to {1}.",
                         args: new object[] { uuid, typeof(TModel).Name });
                     return NotFound();
                 }
-                return Ok(result);
+
+                var dtoResult = this.Parse<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -171,20 +204,23 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <i>https://api.urladdress/v1/page/{page} (GET Method, using default limit request of 300)</i>
         /// <para>
         /// Results<br/>
-        /// ● OK: Successfully, contains result or empty result.<br/>
+        /// ● OK: Successfully, contains dto result or empty result.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
         /// </summary>
         /// <param name="page">page index, from 0</param>
         /// <param name="limit">page limit request</param>
-        /// <returns>action result</returns>    
+        /// <returns>action result</returns> 
+        /// <typeparam name="TDtoOut">dto result type</typeparam>   
         [NonAction]
-        protected IActionResult PagingAction(int page, int limit)
+        protected IActionResult PagingAction<TDtoOut>(int page, int limit)
+            where TDtoOut : class, new()
         {
             try
             {
                 var result = service.Paging(page, limit);
-                return Ok(result);
+                var dtoResult = this.ParseList<TModel, TDtoOut>(result);
+                return Ok(dtoResult);
             }
             catch (Exception ex)
             {
@@ -197,7 +233,7 @@ namespace Com.Atomatus.Bootstarter.Web
         #region [U]pdate
         /// <summary>
         /// <para>Perform a write operation to update data.</para>
-        /// <i>https://api.urladdress/v1 (PUT Method/ Model data from body)</i>
+        /// <i>https://api.urladdress/v1 (PUT Method/ DTO data from body)</i>
         /// <para>
         /// Results<br/>
         /// ● OK: Successfully, data updated.<br/>
@@ -205,13 +241,21 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● Bad Request: some error.
         /// </para>
         /// </summary>
-        /// <param name="result">model from body</param>
+        /// <typeparam name="TDtoIn">DTO type source from body</typeparam>
+        /// <param name="dtoResult">dto from body</param>
         /// <returns>action result</returns>        
         [NonAction]
-        protected IActionResult UpdateAction(TModel result)
+        protected IActionResult UpdateAction<TDtoIn>(TDtoIn dtoResult) where TDtoIn : class, new()
         {
             try
             {
+                if (dtoResult is null)
+                {
+                    throw new ArgumentNullException(nameof(dtoResult));
+                }
+
+                TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
+
                 if (service.Exists(result))
                 {
                     service.Update(result);
@@ -271,98 +315,5 @@ namespace Com.Atomatus.Bootstarter.Web
         }
         #endregion
     }
-
-    /// <summary>
-    /// <para>
-    /// API Controller CRUD base implementing
-    /// the default route "api/v{version:apiVersion}/[controller]" 
-    /// and produces an "application/json" as default.
-    /// </para>
-    /// <para>
-    /// This controller constains by default the following actions:<br/><br/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerCrudBase{TService, TModel}.CreateAction(TModel)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[R]ead:<br/>
-    /// ├─► <see cref="ControllerCrudBase{TService, TModel}.GetAction()"/><br/>
-    /// ├─► <see cref="ControllerCrudBase{TService, TModel}.GetAction(Guid)"/><br/>
-    /// └─► <see cref="GetAction(TID)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[U]pdate:<br/>
-    /// └─► <see cref="ControllerCrudBase{TService, TModel}.UpdateAction(TModel)"/>
-    /// </para>
-    /// 
-    /// <para>
-    /// ┌[D]elete:<br/>
-    /// └─► <see cref="ControllerCrudBase{TService, TModel}.DeleteAction(Guid)"/>
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TService">target service type to data persistence</typeparam>
-    /// <typeparam name="TModel">target model type</typeparam>  
-    /// <typeparam name="TID">target id model type</typeparam>
-    public abstract class ControllerCrudBase<TService, TModel, TID> : ControllerCrudBase<TService, TModel>
-        where TService : IServiceCrud<TModel, TID>
-        where TModel : IModel<TID>
-    {
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        /// <param name="logger">logging target</param>
-        protected ControllerCrudBase(TService service, ILogger<ControllerCrudBase<TService, TModel, TID>> logger) : base(service, logger) { }
-
-        /// <summary>
-        /// Controller CRUD base constructor with service data persistence and logging perform.<br/>
-        /// The follow parameters can be set by dependency injection.<br/>
-        /// Using no logger performing.
-        /// </summary>
-        /// <param name="service">service to data persistence</param>
-        protected ControllerCrudBase(TService service) : base(service) { }
-
-        #region [R]ead        
-        /// <summary>
-        /// <para>Perform a request operation to find register by id.</para>
-        /// <i>https://api.urladdress/v1/{id} (GET Method)</i>
-        /// <para>
-        /// Results<br/>
-        /// ● OK: Successfully, contains result.<br/>
-        /// ● Not Found: Does not exists register with id.<br/>
-        /// ● Bad Request: some error in request.
-        /// </para>
-        /// </summary>
-        /// <param name="id">targer id</param>
-        /// <returns>action result</returns>    
-        [NonAction]
-        protected IActionResult GetAction(TID id)
-        {
-            try
-            {
-                this.RequireValidId(id);
-
-                var result = service.Get(id);
-
-                if (result == null)
-                {
-                    logger.LogD("Id {0} not found!", args: id);
-                    return NotFound();
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogE(ex);
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
-    }
 }
+
