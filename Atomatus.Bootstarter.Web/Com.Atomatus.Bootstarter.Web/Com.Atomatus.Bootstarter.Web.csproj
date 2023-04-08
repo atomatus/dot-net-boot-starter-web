@@ -29,14 +29,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\LICENSE">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </Compile>
-    <Compile Include="..\..\logo.png">
+    </None>
+    <None Include="..\..\logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </Compile>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
