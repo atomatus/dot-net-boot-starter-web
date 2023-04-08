@@ -29,11 +29,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="..\..\LICENSE">
+    <Compile Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </Compile>
-    <Compile Update="..\..\logo.png">
+    <Compile Include="..\..\logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </Compile>
