@@ -115,6 +115,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="ControllerMapperC.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperR.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCr.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCrd.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCru.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCu.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperRu.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.18" />
     <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
