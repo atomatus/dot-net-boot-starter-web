@@ -3,6 +3,8 @@ using Com.Atomatus.Bootstarter.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
@@ -14,30 +16,30 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Create(TModel)"/>
+    /// └─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.CreateAsync(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[R]ead:<br/>
-    /// ├─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Get()"/><br/>
-    /// ├─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Get(Guid)"/><br/>
-    /// └─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Paging(int, int)"/>
+    /// ├─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.GetAsync(CancellationToken)"/><br/>
+    /// ├─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.GetAsync(Guid)"/><br/>
+    /// └─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.PagingAsync(int, int, CancellationToken)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Update(TModel)"/>
+    /// └─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.UpdateAsync(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[D]elete:<br/>
-    /// └─► <see cref="ControllerMapperCrud{TService, TModel, TDtoIn, TDtoOut}.Delete(Guid)"/>
+    /// └─► <see cref="ControllerMapperCrudAsync{TService, TModel, TDtoIn, TDtoOut}.DeleteAsync(Guid)"/>
     /// </para>
     /// </summary>
     /// <typeparam name="TModel">entity model type</typeparam>
     /// <typeparam name="TDtoIn">dto input type, accepted in creation action body</typeparam>
     /// <typeparam name="TDtoOut">dto output type, generated after creation or read operation successfully</typeparam>
-    public abstract class ControllerMapperCrud<TModel, TDtoIn, TDtoOut> : ControllerMapperCrud<IServiceCrud<TModel>, TModel, TDtoIn, TDtoOut>
+    public abstract class ControllerMapperCrudAsync<TModel, TDtoIn, TDtoOut> : ControllerMapperCrudAsync<IServiceCrudAsync<TModel>, TModel, TDtoIn, TDtoOut>
         where TModel : class, IModel, new()
         where TDtoIn : class, new()
         where TDtoOut : class, new()
@@ -48,7 +50,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerMapperCrud(IServiceCrud<TModel> service, ILogger<ControllerMapperCrud<TModel, TDtoIn, TDtoOut>> logger) : base(service, logger) { }
+        protected ControllerMapperCrudAsync(IServiceCrudAsync<TModel> service, ILogger<ControllerMapperCrudAsync<TModel, TDtoIn, TDtoOut>> logger) : base(service, logger) { }
 
         /// <summary>
         /// Controller CRUD constructor with service data persistence and logging perform.<br/>
@@ -56,7 +58,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerMapperCrud(IServiceCrud<TModel> service) : base(service) { }
+        protected ControllerMapperCrudAsync(IServiceCrudAsync<TModel> service) : base(service) { }
     }
 
     /// <summary>
@@ -67,32 +69,32 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="Create(TDtoIn)"/>
+    /// └─► <see cref="CreateAsync(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[R]ead:<br/>
-    /// ├─► <see cref="Get()"/><br/>
-    /// ├─► <see cref="Get(Guid)"/><br/>
-    /// └─► <see cref="Paging(int, int)"/>
+    /// ├─► <see cref="GetAsync(CancellationToken)"/><br/>
+    /// ├─► <see cref="GetAsync(Guid)"/><br/>
+    /// └─► <see cref="PagingAsync(int, int, CancellationToken)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="Update(TDtoIn)"/>
+    /// └─► <see cref="UpdateAsync(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>
     /// ┌[D]elete:<br/>
-    /// └─► <see cref="Delete(Guid)"/>
+    /// └─► <see cref="DeleteAsync(Guid)"/>
     /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
     /// <typeparam name="TModel">entity model type</typeparam>
     /// <typeparam name="TDtoIn">dto input type, accepted in creation action body</typeparam>
     /// <typeparam name="TDtoOut">dto output type, generated after creation or read operation successfully</typeparam>
-    public abstract class ControllerMapperCrud<TService, TModel, TDtoIn, TDtoOut> : ControllerMapperCrudBase<TService, TModel>
-        where TService : IServiceCrud<TModel>
+    public abstract class ControllerMapperCrudAsync<TService, TModel, TDtoIn, TDtoOut> : ControllerMapperCrudBaseAsync<TService, TModel>
+        where TService : IServiceCrudAsync<TModel>
         where TModel : class, IModel, new()
         where TDtoIn : class, new()
         where TDtoOut : class, new()
@@ -103,7 +105,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// </summary>
         /// <param name="service">service to data persistence</param>
         /// <param name="logger">logging target</param>
-        protected ControllerMapperCrud(TService service, ILogger<ControllerMapperCrud<TService, TModel, TDtoIn, TDtoOut>> logger) : base(service, logger) { }
+        protected ControllerMapperCrudAsync(TService service, ILogger<ControllerMapperCrudAsync<TService, TModel, TDtoIn, TDtoOut>> logger) : base(service, logger) { }
 
         /// <summary>
         /// Controller CRUD constructor with service data persistence and logging perform.<br/>
@@ -111,7 +113,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Using no logger performing.
         /// </summary>
         /// <param name="service">service to data persistence</param>
-        protected ControllerMapperCrud(TService service) : base(service) { }
+        protected ControllerMapperCrudAsync(TService service) : base(service) { }
 
         #region [C]reate
         /// <summary>
@@ -126,7 +128,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="result">DTO from body (<typeparamref name="TDtoIn"/>)</param>
         /// <returns>action result (<typeparamref name="TDtoOut"/>)</returns>        
         [HttpPost]
-        public virtual IActionResult Create([FromBody] TDtoIn result) => CreateAction<TDtoIn, TDtoOut>(result);
+        public virtual Task<IActionResult> CreateAsync([FromBody] TDtoIn result) => CreateActionAsync<TDtoIn, TDtoOut>(result);
         #endregion
 
         #region [R]ead
@@ -140,10 +142,12 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● OK: Successfully, contains result list.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
+        /// <i> This operation can be cancelled.</i>
         /// </summary>
+        /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result (<typeparamref name="TDtoIn"/>)</returns>    
         [HttpGet]
-        public virtual IActionResult Get() => GetAction<TDtoOut>();
+        public virtual Task<IActionResult> GetAsync(CancellationToken cancellationToken) => GetActionAsync<TDtoOut>(cancellationToken);
 
         /// <summary>
         /// <para>Perform a request operation to find register by uuid.</para>
@@ -158,7 +162,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="uuid">targer uuid</param>
         /// <returns>action result (<typeparamref name="TDtoIn"/>)</returns>    
         [HttpGet("uuid/{uuid}")]
-        public virtual IActionResult Get(Guid uuid) => GetAction<TDtoOut>(uuid);
+        public virtual Task<IActionResult> GetAsync(Guid uuid) => GetActionAsync<TDtoOut>(uuid);
 
         /// <summary>
         /// <para>Perform a request operation to find registers by paging.</para>
@@ -169,12 +173,14 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● OK: Successfully, contains result or empty result.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
+        /// <i> This operation can be cancelled.</i>
         /// </summary>
         /// <param name="page">page index, from 0</param>
         /// <param name="limit">page limit request</param>
+        /// <param name="cancellationToken">cancellation token</param>
         /// <returns>action result (<typeparamref name="TDtoIn"/>)</returns>    
         [HttpGet("page/{page}/{limit:int?}")]
-        public virtual IActionResult Paging(int page, int limit = -1) => PagingAction<TDtoOut>(page, limit);
+        public virtual Task<IActionResult> PagingAsync(int page, int limit = -1, CancellationToken cancellationToken = default) => PagingActionAsync<TDtoOut>(page, limit, cancellationToken);
         #endregion
 
         #region [U]pdate
@@ -191,7 +197,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="result">DTO from body (<typeparamref name="TDtoIn"/>)</param>
         /// <returns>action result (<typeparamref name="TDtoOut"/>)</returns>        
         [HttpPut]
-        public virtual IActionResult Update([FromBody] TDtoIn result) => UpdateAction(result);
+        public virtual Task<IActionResult> UpdateAsync([FromBody] TDtoIn result) => UpdateActionAsync(result);
         #endregion
 
         #region [D]elete
@@ -208,7 +214,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// <param name="uuid">target uuid entity</param>
         /// <returns>action result (<typeparamref name="TDtoIn"/>)</returns>        
         [HttpDelete("{uuid}")]
-        public virtual IActionResult Delete(Guid uuid) => DeleteAction(uuid);
+        public virtual Task<IActionResult> DeleteAsync(Guid uuid) => DeleteActionAsync(uuid);
         #endregion
     }
 

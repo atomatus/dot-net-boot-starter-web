@@ -130,11 +130,41 @@
     <Compile Update="ControllerMapperCru.cs">
       <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
     </Compile>
+    <Compile Update="ControllerMapperCrud.cs">
+      <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
     <Compile Update="ControllerMapperCu.cs">
       <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
     </Compile>
     <Compile Update="ControllerMapperRu.cs">
       <DependentUpon>ControllerMapperCrud.Base.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ControllerMapperC.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperR.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCr.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCrd.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCru.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCrud.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperCu.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ControllerMapperRu.Async.cs">
+      <DependentUpon>ControllerMapperCrud.Base.Async.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 

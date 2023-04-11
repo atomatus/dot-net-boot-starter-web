@@ -209,8 +209,8 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● OK: Successfully, contains dto result or empty result.<br/>
         /// ● Bad Request: some error in request.
         /// </para>
-        /// </summary>
         /// <i> This operation can be cancelled.</i>
+        /// </summary>
         /// <param name="page">page index, from 0</param>
         /// <param name="limit">page limit request</param>
         /// <param name="cancellationToken">cancellation token</param>
