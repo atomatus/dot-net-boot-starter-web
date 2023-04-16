@@ -79,7 +79,11 @@ namespace Com.Atomatus.Bootstarter.Web
         {
             try
             {
-                if (await service.ExistsAsync(result))
+                if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
+                else if (await service.ExistsAsync(result))
                 {
                     throw new InvalidOperationException("Already exists a register with this UUID!");
                 }
@@ -151,6 +155,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 if (uuid == default)
                 {
                     throw new ArgumentException("Invalid uuid!");
+                }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
                 }
 
                 var result = await service.GetByUuidAsync(uuid);
@@ -255,6 +263,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 if (uuid == default)
                 {
                     throw new ArgumentException("Invalid uuid!");
+                }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
                 }
                 else if (!await service.ExistsByUuidAsync(uuid))
                 {

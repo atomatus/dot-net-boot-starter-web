@@ -79,6 +79,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentNullException(nameof(dtoResult));
                 }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
 
                 TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
 
@@ -181,6 +185,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentException("Invalid uuid!");
                 }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
 
                 var result = await service.GetByUuidAsync(uuid);
                 if (result == null)
@@ -255,6 +263,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentNullException(nameof(dtoResult));
                 }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
 
                 TModel result = this.Parse<TDtoIn, TModel>(dtoResult);
 
@@ -295,6 +307,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 if (uuid == default)
                 {
                     throw new ArgumentException("Invalid uuid!");
+                }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
                 }
                 else if (!await service.ExistsByUuidAsync(uuid))
                 {

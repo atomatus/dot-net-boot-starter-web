@@ -77,7 +77,11 @@ namespace Com.Atomatus.Bootstarter.Web
         {
             try
             {
-                if (service.Exists(result))
+                if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
+                else if (service.Exists(result))
                 {
                     throw new InvalidOperationException("Already exists a register with this UUID!");
                 }
@@ -148,6 +152,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 {
                     throw new ArgumentException("Invalid uuid!");
                 }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
 
                 var result = service.GetByUuid(uuid);
                 if (result == null)
@@ -212,7 +220,11 @@ namespace Com.Atomatus.Bootstarter.Web
         {
             try
             {
-                if (service.Exists(result))
+                if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
+                }
+                else if (service.Exists(result))
                 {
                     service.Update(result);
                     return Ok();
@@ -249,6 +261,10 @@ namespace Com.Atomatus.Bootstarter.Web
                 if (uuid == default)
                 {
                     throw new ArgumentException("Invalid uuid!");
+                }
+                else if (!ModelState.IsValid)
+                {
+                    throw new ArgumentException("Invalid data format!");
                 }
                 else if (!service.ExistsByUuid(uuid))
                 {
