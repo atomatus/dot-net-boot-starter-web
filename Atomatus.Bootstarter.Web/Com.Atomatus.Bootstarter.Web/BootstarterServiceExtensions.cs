@@ -53,8 +53,9 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● <see cref="VersioningExtensions.UseVersionsing(IApplicationBuilder)"/><br/>
         /// ● <see cref="SwaggerServiceExtensions.UseSwagger(IApplicationBuilder, IWebHostEnvironment, IApiVersionDescriptionProvider)"/><br/>
         /// ● <see cref="HttpsPolicyBuilderExtensions.UseHttpsRedirection(IApplicationBuilder)"/><br/>
-        /// ● <see cref="AuthorizationAppBuilderExtensions.UseAuthorization(IApplicationBuilder)"/><br/>
         /// ● <see cref="EndpointRoutingApplicationBuilderExtensions.UseRouting(IApplicationBuilder)"/><br/>
+        /// ● <see cref="AuthAppBuilderExtensions.UseAuthentication(IApplicationBuilder)"/><br/>
+        /// ● <see cref="AuthorizationAppBuilderExtensions.UseAuthorization(IApplicationBuilder)"/><br/>
         /// ● <see cref="EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder, System.Action{Microsoft.AspNetCore.Routing.IEndpointRouteBuilder})"/>
         /// </para>
         /// </summary>
@@ -72,8 +73,9 @@ namespace Com.Atomatus.Bootstarter.Web
                 .UseVersionsing()
                 .UseSwagger(env, provider)
                 .UseHttpsRedirection()
-                .UseAuthorization()
                 .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
