@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using Com.Atomatus.Bootstarter.Model;
 using Com.Atomatus.Bootstarter.Services;
-using Microsoft.AspNetCore.Mvc;
+using Com.Atomatus.Bootstarter.Util;
 using Microsoft.Extensions.Logging;
 
 namespace Com.Atomatus.Bootstarter.Web
@@ -30,35 +28,18 @@ namespace Com.Atomatus.Bootstarter.Web
         protected ControllerMapperBase(TService service, ILogger<ControllerMapperBase<TService, TModel>> logger) : base(service, logger) { }
 
         /// <summary>
-        /// Copy all properties from <paramref name="source"/> to <paramref name="target"/>.
+        ///  Copies property values from the <paramref name="source"/> object to the <paramref name="target"/> object.
+        ///  This method facilitates the transfer of property values between objects, applying
+        ///  a series of strategies to handle different copying scenarios.
         /// </summary>
         /// <param name="source">source object</param>
         /// <param name="target">target object to accept the values</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        protected internal void Copy([NotNull] object source, [NotNull] object target)
+        /// <returns>True, source properties was copied to target, otherwise false.</returns>
+        /// <exception cref="ArgumentNullException">Throws when source or target is null</exception>
+        /// <exception cref="InvalidOperationException">Throws when is not possible copy value from source to target</exception>
+        protected internal bool Copy([NotNull] object source, [NotNull] object target)
         {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            else if (source is null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            PropertyInfo[] sourceProperties = source.GetType().GetProperties();
-            PropertyInfo[] targetProperties = target.GetType().GetProperties();
-
-            foreach (PropertyInfo sourceProp in sourceProperties)
-            {
-                PropertyInfo targetProp = Array.Find(targetProperties, p => p.Name == sourceProp.Name && p.PropertyType == sourceProp.PropertyType);
-
-                if (targetProp != null && targetProp.CanWrite)
-                {
-                    object sourceValue = sourceProp.GetValue(source, null);
-                    targetProp.SetValue(target, sourceValue, null);
-                }
-            }
+            return ObjectMapper.Copy(source, target);
         }
 
         /// <summary>
