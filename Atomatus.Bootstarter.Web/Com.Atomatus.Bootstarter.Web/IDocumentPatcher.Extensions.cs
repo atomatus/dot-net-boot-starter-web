@@ -1,10 +1,9 @@
-﻿using Com.Atomatus.Bootstarter.Model;
-using Com.Atomatus.Bootstarter.Util;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using Com.Atomatus.Bootstarter.Model;
 
 namespace Com.Atomatus.Bootstarter.Web
 {
@@ -26,9 +25,9 @@ namespace Com.Atomatus.Bootstarter.Web
         /// Types with same Properties definition.
         /// </para>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="target"></param>
+        /// <typeparam name="T">target type</typeparam>
+        /// <param name="self">document patcher reference</param>
+        /// <param name="target">target object to receive shared properties with current document patcher object</param>
         public static void ApplyTo<T>(this IDocumentPatcher self, [NotNull] T target) where T: class, IModel
         {
             var sourceProperties = self.GetType().GetProperties().Where(p => p.CanRead);

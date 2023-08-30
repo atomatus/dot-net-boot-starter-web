@@ -39,7 +39,7 @@ jobs:
 
       - name: Publish Bootstarter.Web to NuGet
         if: ${{ success() }}
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: alirezanet/publish-nuget@v3.1.0
         with:
           PROJECT_FILE_PATH: ${{ env.PROJ_BS_PATH }}
           VERSION_REGEX: '^\s*<PackageVersion>(.*)</PackageVersion>\s*$'
