@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.github\workflows\nuget-cicd.yml = ..\.github\workflows\nuget-cicd.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.Atomatus.Bootstarter.Web", "Test\Com.Atomatus.Bootstarter.Web.csproj", "{E42EFE41-8353-438B-88A8-B64C5C54B982}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.Atomatus.Bootstarter.Web.Test", "Test\Com.Atomatus.Bootstarter.Web.Test.csproj", "{E42EFE41-8353-438B-88A8-B64C5C54B982}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FEEA88B0-C130-4B9B-8EBA-5EB1F7F7F8D4}"
 EndProject

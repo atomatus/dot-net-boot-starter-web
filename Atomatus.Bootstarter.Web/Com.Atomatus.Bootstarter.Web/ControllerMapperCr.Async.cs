@@ -65,6 +65,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// ├─► <see cref="GetAsync(CancellationToken)"/><br/>
     /// ├─► <see cref="GetAsync(Guid)"/><br/>
     /// └─► <see cref="PagingAsync(int, int, CancellationToken)"/>
+    /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
     /// <typeparam name="TModel">entity model type</typeparam>

@@ -21,7 +21,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[U]pdate:<br/>
-    /// └─► <see cref="ControllerMapperRu{TService, TModel, TDtoIn, TDtoOut}.Update(TModel)"/>
+    /// └─► <see cref="ControllerMapperRu{TService, TModel, TDtoIn, TDtoOut}.Update(TDtoIn)"/>
     /// </para>
     /// 
     /// </summary>

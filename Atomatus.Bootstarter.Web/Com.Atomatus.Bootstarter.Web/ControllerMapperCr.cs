@@ -63,6 +63,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// ├─► <see cref="Get()"/><br/>
     /// ├─► <see cref="Get(Guid)"/><br/>
     /// └─► <see cref="Paging(int, int)"/>
+    /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
     /// <typeparam name="TModel">entity model type</typeparam>

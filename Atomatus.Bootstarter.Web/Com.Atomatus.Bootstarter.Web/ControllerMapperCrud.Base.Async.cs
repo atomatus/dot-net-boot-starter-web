@@ -64,7 +64,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● Bad Request: Aleady exists or some another error.
         /// </para>
         /// </summary>
-        /// <param name="result">DTO from body</param>
+        /// <param name="dtoResult">DTO from body</param>
         /// <returns>action result task</returns>    
         /// <typeparam name="TDtoIn">DTO type source from body</typeparam>
         /// <typeparam name="TDtoOut">DTO type result</typeparam>    
@@ -252,7 +252,7 @@ namespace Com.Atomatus.Bootstarter.Web
         /// ● Bad Request: some error.
         /// </para>
         /// </summary>
-        /// <param name="result">DTO from body</param>
+        /// <param name="dtoResult">DTO from body</param>
         /// <returns>action result task</returns>        
         [NonAction]
         protected async Task<IActionResult> UpdateActionAsync<TDtoIn>(TDtoIn dtoResult) where TDtoIn : class, new()

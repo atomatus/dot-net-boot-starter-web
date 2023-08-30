@@ -14,7 +14,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// 
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerMapperCrd{TService, TModel, TDtoIn, TDtoOut}.Create(TModel)"/>
+    /// └─► <see cref="ControllerMapperCrd{TService, TModel, TDtoIn, TDtoOut}.Create(TDtoIn)"/>
     /// </para>
     /// 
     /// <para>

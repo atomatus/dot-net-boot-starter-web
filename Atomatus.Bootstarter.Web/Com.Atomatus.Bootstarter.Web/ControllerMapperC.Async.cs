@@ -13,7 +13,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="ControllerMapperCAsync{TService, TModel, TDtoIn, TDtoOut}.Create(TDtoIn)"/>
+    /// └─► <see cref="ControllerMapperCAsync{TService, TModel, TDtoIn, TDtoOut}.CreateAsync(TDtoIn)"/>
     /// </para>
     /// </summary>
     /// <typeparam name="TModel">entity model type</typeparam>
@@ -48,7 +48,7 @@ namespace Com.Atomatus.Bootstarter.Web
     /// </para>
     /// <para>
     /// ┌[C]reate:<br/>
-    /// └─► <see cref="Create(TDtoIn)"/>
+    /// └─► <see cref="CreateAsync(TDtoIn)"/>
     /// </para>
     /// </summary>
     /// <typeparam name="TService">target service to data persistence</typeparam>
