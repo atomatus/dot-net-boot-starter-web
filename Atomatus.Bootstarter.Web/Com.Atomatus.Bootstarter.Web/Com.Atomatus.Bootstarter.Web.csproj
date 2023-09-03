@@ -9,10 +9,10 @@
     <Authors>Atomatus</Authors>
     <Company>Atomatus</Company>
     <Copyright>®2020-2023 Atomatus - All rights reserved</Copyright>
-    <Description>Sytem library for web RESTFul API to boot starter entity framework projects by domain aplication and hexagonal architecture usage.</Description>
+    <Description>A versatile framework for building robust and efficient RESTful web APIs in C# using ASP.NET Core. It provides a set of powerful tools and abstractions that simplify common development tasks, allowing developers to focus on building and maintaining their API endpoints.</Description>
     <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
     <PackageTags>ef boot starter RESTFul API</PackageTags>
-    <PackageVersion>0.0.19</PackageVersion>
+    <PackageVersion>0.0.20</PackageVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
@@ -23,9 +23,9 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>privatekey.snk</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>1.0.0.19</AssemblyVersion>
-    <FileVersion>1.0.0.19</FileVersion>
+    <AssemblyOriginatorKeyFile>..\..\privatekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>1.0.0.20</AssemblyVersion>
+    <FileVersion>1.0.0.20</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -175,8 +175,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.42" />
-    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.10" />
+    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.43" />
+    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />

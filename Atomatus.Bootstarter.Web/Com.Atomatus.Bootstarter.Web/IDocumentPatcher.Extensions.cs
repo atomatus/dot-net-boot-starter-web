@@ -40,6 +40,8 @@ namespace Com.Atomatus.Bootstarter.Web
                     try
                     {
                         var targetValue = ObjectMapper.Parse(value, found.PropertyType);
+                        //unset values before set new value to avoid problems with Proxy patterns, Lazy Load.
+                        found.SetValue(target, null, null);
                         found.SetValue(target, targetValue, null);
                     }
                     catch (Exception ex)
