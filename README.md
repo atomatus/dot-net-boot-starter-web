@@ -28,8 +28,58 @@ public class MyDataController : ControllerCrudBase<MyDataService, MyDataModel>
     public MyDataController(MyDataService service) : base(service) { }
 }
 ```
+### 1.1 ControllerCrud - Generic Framework for CRUD Controllers
+The `ControllerCrud` class is an abstract class that acts as a base controller for `CRUD` operations on model entities in an ASP.NET Core application. It contains methods that correspond to `CRUD` operations and provides a generic framework for creating specific controllers for model entity types. The class is highly configurable and allows you to easily create specific controllers for your model entities.
+
+#### Class Usage
+To use the `ControllerCrud` class, follow these steps:
+
+- **Create a Derived Controller:** Create a controller class derived from `ControllerCrud` and specify the type of entity model (`TModel`) you want to manipulate. For example:
+
+     ```csharp
+     public class UserController : ControllerCrud<UserModel>
+     {
+         // Implement custom action methods here if needed.
+     }
+     ```
+- **Implement Custom Action Methods:** If needed, you can implement custom action methods in your derived controller to add specific functionality to your application.
+
+- **Dependency Injection:** You can inject a service instance that implements the IServiceCrud<TModel> interface into your controller's constructor. This allows the controller to access service methods to perform CRUD operations on the entity model. For example:
+
+     ```csharp
+     public interface IUserModelService : IServiceCrud<UserModel>
+     {
+         // services...
+     }
+     ```
+
+     ```csharp
+     public UserController(IUserModelService userService)
+         : base(userService)
+     {
+         // The service is injected and can be used for CRUD operations.
+     }
+     ```
+- **Routes and Attributes:** The action methods in the derived class are decorated with attributes that specify the routes for standard `CRUD` operations (`Create`, `Read`, `Update` and `Delete`). For example, the Create method is decorated with `[HttpPost]` and the Get method is decorated with `[HttpGet]`.
+
+- **Customization:** You can further customize attributes such as naming routes, setting constraints, etc. as needed to meet your application requirements.
+
+- **Access to CRUD Operations:** You can access CRUD operations through the action methods inherited from the `ControllerCrud` class. For example, the Create method can be used to create a new model entity.
+
+```csharp
+[HttpPost]
+public IActionResult Create([FromBody] UserModel userModel)
+{
+     // Calls the create service operation to add a new model.
+     var result = CreateAction(userModel);
+     return result;
+}
+```
+- **Routing and URLs:** Standard `CRUD` operations are accessed via URLs such as `/api/controllerName` for creation (`POST`), `/api/controllerName/id` for reading (` GET`), `/api/controllerName/id` for update (`PUT`), and `/api/controllerName/id` for delete (`DELETE`), where `controllerName` is the name of your derived controller.
+
+This is a high-level overview of how you can use the ControllerCrud class to create CRUD controllers in an ASP.NET Core application. You can create controllers for different entity models and customize CRUD operations as needed to meet your application requirements.
 ### 2. ControllerMapperBase
-The ControllerMapperBase class simplifies the conversion of DTO objects to and from model objects. It automates the process of copying property values between objects and is particularly useful for handling data transformations.
+The `ControllerMapperBase` class simplifies the conversion of DTO objects to and from model objects. It automates the process of copying property values between objects and is particularly useful for handling data transformations.
 
 
 #### Example Usage:
@@ -147,15 +197,31 @@ public void ConfigureServices(IServiceCollection services)
 ### Getting Started
 To get started with the Bootstarter Web API project, follow these steps:
 
-- Clone or download the project repository.
+- **Install Package using NuGet:**
 
-- Customize the provided classes such as ControllerCrudBase, ControllerCrudBaseAsync, and ControllerMapperBase to match your data models and business logic.
+     - **Open Visual Studio:** Start Visual Studio and open your existing project or create a new project depending on your needs.
 
-- Implement your API endpoints and actions using the classes provided by the Bootstarter framework.
+     - **Access NuGet Package Manager:**
 
-- Configure Swagger documentation and API versioning in your Startup.cs file using the provided extension methods.
+         - **For a specific project:** Right-click the project in Solution Explorer and choose "Manage NuGet Packages".
 
-- Build and run your ASP.NET Core application to start using your Web API with all the advantages of the Bootstarter framework.
+         - **For entire solution:** If you want to install the package in all projects in the solution, right-click the solution in Solution Explorer and choose "Manage NuGet Packages for Solution".
+
+     - **Search for Package `Atomatus.Bootstarter.Web`:** In the NuGet Package Manager, go to the "Browse" tab and type "Atomatus.Bootstarter.Web" in the search box.
+
+     - **Install Package:** Click the "Install" button to start the installation process.
+
+     - **Accept Terms of Use (if required):** NuGet may ask you to accept the terms of use for the package. Make sure you read and accept the terms if necessary.
+
+     - **Verify Installation:** After successful installation, you will see output messages indicating that the package was installed successfully. You can also check the "Dependencies" folder in Solution Explorer to confirm that the package has been added to the project.
+
+- **Customize the provided classes** such as ControllerCrudBase, ControllerCrudBaseAsync, and ControllerMapperBase to match your data models and business logic.
+
+- **Implement your API endpoints** and actions using the classes provided by the Bootstarter framework.
+
+- **Configure Swagger** documentation and API versioning in your Startup.cs file using the provided extension methods.
+
+- **Build and run your ASP.NET Core** application to start using your Web API with all the advantages of the Bootstarter framework.
 
 ### Conclusion
 
