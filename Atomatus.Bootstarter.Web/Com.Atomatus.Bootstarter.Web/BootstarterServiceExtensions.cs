@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Com.Atomatus.Bootstarter.Context;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
@@ -77,6 +78,20 @@ namespace Com.Atomatus.Bootstarter.Web
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapControllers());
+        }
+
+        /// <summary>
+        /// Applies any pending migrations for the context to the database.
+        /// Will create the database if it does not already exist.
+        /// </summary>
+        /// <typeparam name="TContext">target database context</typeparam>
+        /// <param name="app">application configuration builder</param>
+        /// <returns>application configuration builder</returns>/// <returns></returns>
+        public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app)
+            where TContext : ContextBase
+        {
+            app.ApplicationServices.RequireMigration<TContext>();
+            return app;
         }
     }
 }
