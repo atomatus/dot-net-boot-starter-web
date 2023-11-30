@@ -12,7 +12,7 @@
     <Description>A versatile framework for building robust and efficient RESTful web APIs in C# using ASP.NET Core. It provides a set of powerful tools and abstractions that simplify common development tasks, allowing developers to focus on building and maintaining their API endpoints.</Description>
     <PackageId>Com.Atomatus.BootStarter.Web</PackageId>
     <PackageTags>ef boot starter RESTFul API</PackageTags>
-    <PackageVersion>0.0.21</PackageVersion>
+    <PackageVersion>0.0.22</PackageVersion>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://raw.githubusercontent.com/atomatus/design-template/master/logos/atomatus/logo512x512.png?token=ACNS4LJJGHPDFLXVQRCXN5TAPW3JK</PackageIconUrl>
@@ -24,8 +24,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\privatekey.snk</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>1.0.0.21</AssemblyVersion>
-    <FileVersion>1.0.0.21</FileVersion>
+    <AssemblyVersion>1.0.0.22</AssemblyVersion>
+    <FileVersion>1.0.0.22</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -175,8 +175,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.49" />
-    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.11" />
+    <PackageReference Include="Com.Atomatus.BootStarter" Version="0.0.53" />
+    <PackageReference Include="Com.Atomatus.BootStarter.Log" Version="0.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
